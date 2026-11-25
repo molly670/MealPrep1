@@ -1,0 +1,2924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0F766E" />
+  <title>MealPrep — Indian Meal &amp; Healthy Diet Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&family=Noto+Sans+Gurmukhi:wght@400;600;700&family=Noto+Sans+Kannada:wght@400;600;700&family=Noto+Sans+Malayalam:wght@400;600;700;800&family=Noto+Sans+Oriya:wght@400;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              'Inter',
+              'Noto Sans Malayalam',
+              'Noto Sans Devanagari',
+              'Noto Sans Tamil',
+              'Noto Sans Telugu',
+              'Noto Sans Kannada',
+              'Noto Sans Bengali',
+              'Noto Sans Gujarati',
+              'Noto Sans Gurmukhi',
+              'Noto Sans Oriya',
+              'system-ui',
+              'sans-serif'
+            ]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #CCFBF1 0%, #F0FDFA 42%, #FEF3C7 100%);
+      color: #132A28;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, select, textarea { user-select: text; }
+    .app-shell {
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #F4FBF9 0%, #FAF8F5 50%, #FFF7ED 100%);
+      position: relative;
+      padding-bottom: 98px;
+    }
+    @media (min-width: 640px) {
+      body {
+        background: radial-gradient(circle at top left, #99F6E4 0%, #E0F2FE 45%, #FDE68A 100%);
+        padding: 16px 0;
+      }
+      .app-shell {
+        min-height: calc(100vh - 32px);
+        border: 2px solid #5EEAD4;
+        border-radius: 36px;
+        box-shadow: 0 28px 65px -12px rgba(15, 118, 110, 0.25), 0 10px 28px -6px rgba(217, 119, 6, 0.14);
+        overflow-x: hidden;
+      }
+    }
+    .culinary-card {
+      background: #FFFFFF;
+      border: 1.5px solid #CCFBF1;
+      box-shadow: 0 12px 28px -8px rgba(15, 118, 110, 0.12);
+    }
+    .grain-card {
+      background: linear-gradient(145deg, #F0FDFA 0%, #FFFFFF 100%);
+      border: 1.5px solid #5EEAD4;
+      box-shadow: 0 10px 24px -6px rgba(13, 148, 136, 0.14);
+    }
+    .protein-card {
+      background: linear-gradient(145deg, #FFE4E6 0%, #FFF1F2 55%, #FFFFFF 100%);
+      border: 1.5px solid #FDA4AF;
+      box-shadow: 0 10px 24px -6px rgba(225, 29, 72, 0.14);
+    }
+    .veg-card {
+      background: linear-gradient(145deg, #F5F3FF 0%, #FFFFFF 100%);
+      border: 1.5px solid #C4B5FD;
+      box-shadow: 0 10px 24px -6px rgba(124, 58, 237, 0.14);
+    }
+    .hero-banner-pattern {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1.5px, transparent 1.5px);
+      background-size: 14px 14px;
+    }
+    .tab-panel {
+      display: none;
+      animation: slideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .tab-panel.active {
+      display: block;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes splashPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    .splash-logo-anim {
+      animation: splashPulse 1.6s ease-in-out infinite;
+    }
+    .splash-fade-out {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .pressable:active { transform: scale(0.97); }
+  </style>
+</head>
+<body class="font-sans antialiased">
+
+  <!-- 1. ANIMATED SPLASH SCREEN ON APP OPEN (TAP ANYWHERE OR AUTO-ENTER) -->
+  <div id="appSplashScreen" role="button" tabindex="0" aria-label="Enter MealPrep" class="fixed inset-0 z-50 bg-gradient-to-br from-teal-900 via-teal-800 to-emerald-900 flex flex-col items-center justify-center p-6 text-center text-white cursor-pointer">
+    <div class="splash-logo-anim w-24 h-24 rounded-3xl bg-gradient-to-tr from-amber-400 via-orange-400 to-yellow-300 p-1 shadow-2xl mb-5">
+      <div class="w-full h-full rounded-[20px] bg-teal-950 flex items-center justify-center text-5xl">
+        🍲
+      </div>
+    </div>
+    <h1 class="text-3xl font-extrabold tracking-tight text-white">MealPrep</h1>
+    <p class="text-xs sm:text-sm font-semibold text-teal-200 mt-1.5">
+      Desi Kitchen &bull; Kerala &amp; Indian Meals &bull; Healthy Diet
+    </p>
+    <div class="mt-6 flex items-center gap-1.5">
+      <span class="w-2 h-2 rounded-full bg-amber-400 animate-bounce"></span>
+      <span class="w-2 h-2 rounded-full bg-emerald-300 animate-bounce" style="animation-delay: 0.15s"></span>
+      <span class="w-2 h-2 rounded-full bg-white animate-bounce" style="animation-delay: 0.3s"></span>
+    </div>
+    <span class="mt-5 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 text-[11px] font-bold text-amber-200 tracking-wide">
+      Tap anywhere to enter &rarr;
+    </span>
+  </div>
+
+  <div class="app-shell flex flex-col">
+
+    <!-- TOP STICKY HEADER -->
+    <header class="sticky top-0 z-40 bg-gradient-to-r from-teal-800 via-teal-700 to-emerald-700 text-white border-b border-teal-600/50 px-4 py-3.5 flex items-center justify-between gap-2 shadow-md">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-400 to-yellow-300 p-[2px] shadow-md shrink-0">
+          <div class="w-full h-full rounded-[14px] bg-teal-950 flex items-center justify-center text-xl">
+            🍲
+          </div>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white truncate">
+            MealPrep
+          </h1>
+          <p id="headerSubtitle" class="text-[11px] font-medium text-teal-100 truncate">
+            Indian Meal &amp; Healthy Diet Planner
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Symbol-Only Help (?) Button -->
+        <button
+          id="openFtueBtn"
+          type="button"
+          aria-label="Help Guide"
+          title="Help Guide"
+          class="pressable w-8 h-8 rounded-full bg-amber-400/20 hover:bg-amber-400/35 border border-amber-300/60 text-amber-200 text-sm font-extrabold flex items-center justify-center transition shadow-xs"
+        >
+          ?
+        </button>
+
+        <div class="relative">
+          <select
+            id="langSelect"
+            aria-label="Select Indian Language"
+            class="appearance-none bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white text-[11.5px] font-extrabold rounded-full pl-3.5 pr-7 py-1.5 focus:outline-none cursor-pointer shadow-sm"
+          >
+            <option value="en" class="text-stone-900">English</option>
+            <option value="ml" class="text-stone-900">മലയാളം</option>
+            <option value="hi" class="text-stone-900">हिन्दी</option>
+            <option value="ta" class="text-stone-900">தமிழ்</option>
+            <option value="te" class="text-stone-900">తెలుగు</option>
+            <option value="kn" class="text-stone-900">ಕನ್ನಡ</option>
+            <option value="bn" class="text-stone-900">বাংলা</option>
+            <option value="mr" class="text-stone-900">मराठी</option>
+            <option value="gu" class="text-stone-900">ગુજરાતી</option>
+            <option value="pa" class="text-stone-900">ਪੰਜਾਬੀ</option>
+            <option value="or" class="text-stone-900">ଓଡ଼ିଆ</option>
+            <option value="as" class="text-stone-900">অসমীয়া</option>
+          </select>
+          <span class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] text-amber-300">▼</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- TOAST SNACKBAR -->
+    <div id="snackbar" class="hidden mx-4 mt-3 rounded-2xl px-4 py-3 text-xs font-bold flex items-center justify-between gap-3 border shadow-sm">
+      <span id="snackbarText"></span>
+      <button type="button" id="closeSnackbarBtn" class="text-[11px] uppercase underline shrink-0">OK</button>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 px-4 pt-4 pb-6 space-y-4">
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: KITCHEN / അടുക്കള                                            -->
+      <!-- =================================================================== -->
+      <section id="panel-fridge" class="tab-panel active space-y-4">
+        <!-- Kitchen Hero Banner -->
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-700 via-purple-700 to-fuchsia-600 hero-banner-pattern p-4 text-white shadow-lg shadow-indigo-900/20">
+          <div class="flex items-center justify-between gap-3">
+            <div class="space-y-1 min-w-0">
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white/15 text-[10px] font-extrabold uppercase tracking-wider text-amber-200">
+                ✨ Smart Indian Kitchen
+              </span>
+              <h2 id="fridgeTitle" class="text-base sm:text-lg font-extrabold text-white leading-snug">What's in your kitchen today?</h2>
+              <p id="fridgeSub" class="text-[11.5px] text-indigo-100 leading-relaxed">
+                Tap available items or type Desi names via + Add below.
+              </p>
+            </div>
+            <div class="w-20 h-20 shrink-0 rounded-2xl bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center p-1.5 shadow-inner">
+              <svg viewBox="0 0 80 80" class="w-full h-full drop-shadow">
+                <circle cx="40" cy="42" r="32" fill="#FDE68A" stroke="#F59E0B" stroke-width="3" />
+                <circle cx="40" cy="42" r="26" fill="#FFFBEB" />
+                <circle cx="32" cy="47" r="11" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" />
+                <circle cx="30" cy="44" r="1.3" fill="#10B981" />
+                <circle cx="34" cy="48" r="1.3" fill="#F59E0B" />
+                <circle cx="50" cy="34" r="8" fill="#F97316" stroke="#EA580C" stroke-width="1.5" />
+                <circle cx="50" cy="34" r="5.5" fill="#FBBF24" />
+                <circle cx="50" cy="52" r="7.5" fill="#059669" stroke="#047857" stroke-width="1.5" />
+                <circle cx="48" cy="51" r="2" fill="#6EE7B7" />
+                <circle cx="52" cy="53" r="1.8" fill="#A7F3D0" />
+                <path d="M24 27 Q31 20 38 27 Q31 32 24 27 Z" fill="#10B981" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-white/15">
+            <span id="selectedCounterBadge" class="px-3 py-1 rounded-xl bg-white text-teal-900 text-xs font-extrabold shadow-xs">
+              5 Selected
+            </span>
+            <button
+              id="clearAllItemsBtn"
+              type="button"
+              class="pressable px-3 py-1 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[11px] font-bold"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Dietary Preference Toggles: Veg / Non-Veg / Dairy -->
+        <div class="culinary-card rounded-2xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span id="dietToggleHeading" class="text-[11px] font-extrabold uppercase tracking-wider text-teal-800">
+              🍽️ Dietary Preference Filter
+            </span>
+            <span id="dietToggleBadge" class="text-[10.5px] font-bold text-stone-500">All Items</span>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              id="toggleVegBtn"
+              class="pressable py-2 px-2.5 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
+            >
+              <span>🟢</span>
+              <span id="toggleVegText">Veg</span>
+            </button>
+            <button
+              type="button"
+              id="toggleNonVegBtn"
+              class="pressable py-2 px-2.5 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
+            >
+              <span>🍗</span>
+              <span id="toggleNonVegText">Non-Veg</span>
+            </button>
+            <button
+              type="button"
+              id="toggleDairyBtn"
+              class="pressable py-2 px-2.5 rounded-xl border text-xs font-extrabold flex items-center justify-center gap-1.5 transition"
+            >
+              <span>🥛</span>
+              <span id="toggleDairyText">Dairy</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Category 1: Grains -->
+        <div class="grain-card rounded-3xl p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-xl bg-teal-600 text-white flex items-center justify-center text-sm shadow-2xs">🌾</span>
+              <span id="catGrainsLabel" class="text-xs font-extrabold uppercase tracking-wider text-teal-900">
+                Staples &amp; Grains
+              </span>
+            </div>
+            <button
+              type="button"
+              data-toggle-cat-add="grains"
+              class="pressable inline-flex items-center gap-1 px-3 py-1 rounded-full bg-teal-600 hover:bg-teal-700 text-white text-[11px] font-extrabold shadow-xs"
+            >
+              + Add
+            </button>
+          </div>
+          <form data-cat-add-form="grains" class="hidden flex items-center gap-2 pt-1">
+            <input
+              type="text"
+              placeholder="Desi name e.g., Ari, Gothambu, Maida, Rava, Poha..."
+              class="flex-1 min-w-0 rounded-xl bg-white border border-teal-400 px-3 py-2 text-xs text-stone-900 placeholder-stone-400 focus:outline-none"
+            />
+            <button type="submit" class="pressable px-3.5 py-2 rounded-xl bg-teal-600 text-white font-extrabold text-xs shrink-0 shadow">
+              ✓
+            </button>
+          </form>
+          <div id="chips-grains" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Category 2: Proteins -->
+        <div class="protein-card rounded-3xl p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-xl bg-rose-600 text-white flex items-center justify-center text-sm shadow-2xs">🥚</span>
+              <span id="catProteinLabel" class="text-xs font-extrabold uppercase tracking-wider text-rose-950">
+                Proteins (Dal / Eggs / Chicken / Fish / Paneer / Curd)
+              </span>
+            </div>
+            <button
+              type="button"
+              data-toggle-cat-add="protein"
+              class="pressable inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-extrabold shadow-xs"
+            >
+              + Add
+            </button>
+          </div>
+          <form data-cat-add-form="protein" class="hidden flex items-center gap-2 pt-1">
+            <input
+              type="text"
+              placeholder="Desi name e.g., Murgh, Meen, Mutta, Parippu, Dahi..."
+              class="flex-1 min-w-0 rounded-xl bg-white border border-rose-400 px-3 py-2 text-xs text-stone-900 placeholder-stone-400 focus:outline-none"
+            />
+            <button type="submit" class="pressable px-3.5 py-2 rounded-xl bg-rose-600 text-white font-extrabold text-xs shrink-0 shadow">
+              ✓
+            </button>
+          </form>
+          <div id="chips-protein" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Category 3: Vegetables -->
+        <div class="veg-card rounded-3xl p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-7 h-7 rounded-xl bg-violet-600 text-white flex items-center justify-center text-sm shadow-2xs">🥬</span>
+              <span id="catVegLabel" class="text-xs font-extrabold uppercase tracking-wider text-violet-900">
+                Vegetables &amp; Coconut
+              </span>
+            </div>
+            <button
+              type="button"
+              data-toggle-cat-add="veg"
+              class="pressable inline-flex items-center gap-1 px-3 py-1 rounded-full bg-violet-600 hover:bg-violet-700 text-white text-[11px] font-extrabold shadow-xs"
+            >
+              + Add
+            </button>
+          </div>
+          <form data-cat-add-form="veg" class="hidden flex items-center gap-2 pt-1">
+            <input
+              type="text"
+              placeholder="Desi name e.g., Aloo, Vendakka, Palak, Thenga, Cheera..."
+              class="flex-1 min-w-0 rounded-xl bg-white border border-violet-400 px-3 py-2 text-xs text-stone-900 placeholder-stone-400 focus:outline-none"
+            />
+            <button type="submit" class="pressable px-3.5 py-2 rounded-xl bg-violet-600 text-white font-extrabold text-xs shrink-0 shadow">
+              ✓
+            </button>
+          </form>
+          <div id="chips-veg" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Live Health Condition Advisory Alert -->
+        <div id="kitchenHealthAlertBox" class="hidden rounded-2xl bg-rose-50 border border-rose-300 p-3.5 space-y-1.5 shadow-xs">
+          <div class="flex items-center justify-between gap-2">
+            <span id="kitchenHealthAlertTitle" class="text-xs font-extrabold text-rose-700">🩺 Health Tip</span>
+            <button type="button" id="kitchenGoDietBtn" class="text-[11px] font-extrabold text-teal-700 underline">
+              Diet Guide &rarr;
+            </button>
+          </div>
+          <p id="kitchenHealthAlertBody" class="text-xs text-stone-700 leading-relaxed"></p>
+        </div>
+
+        <button
+          id="generatePlanBtn"
+          type="button"
+          class="pressable w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-extrabold text-sm shadow-lg shadow-orange-600/25 flex items-center justify-center gap-2"
+        >
+          <span id="generatePlanBtnText">See Matching Meals</span>
+          <span class="text-base">&rarr;</span>
+        </button>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: MEALS / കോമ്പോ                                              -->
+      <!-- =================================================================== -->
+      <section id="panel-combo" class="tab-panel space-y-4">
+        <div class="rounded-3xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hero-banner-pattern p-4 text-white shadow-md flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <h2 id="comboTitle" class="text-base sm:text-lg font-extrabold text-white">Matching Meals</h2>
+            <p id="comboSub" class="text-[11.5px] text-amber-50 mt-0.5">
+              Dosa, Chapati, Kerala Porotta &amp; Indian dishes matched to your items.
+            </p>
+          </div>
+          <button
+            type="button"
+            id="editFridgeBtn"
+            class="pressable px-3 py-2 rounded-xl bg-white text-orange-700 text-xs font-extrabold shrink-0 shadow-sm"
+          >
+            + Edit Items
+          </button>
+        </div>
+
+        <!-- Quick Dietary Toggle Strip inside Meals Tab -->
+        <div id="mealsDietFilterStrip" class="flex items-center gap-2 overflow-x-auto no-scrollbar"></div>
+
+        <div id="comboRegionBar" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+        <div id="comboCardsContainer" class="space-y-4"></div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: PREPARE / പാചകം                                             -->
+      <!-- =================================================================== -->
+      <section id="panel-prepare" class="tab-panel space-y-4">
+        <div class="rounded-3xl bg-gradient-to-r from-teal-700 to-cyan-700 hero-banner-pattern p-4 text-white shadow-md flex items-center justify-between gap-3">
+          <div>
+            <h2 id="prepareTitle" class="text-base sm:text-lg font-extrabold text-white">How to Prepare</h2>
+            <p id="prepareSub" class="text-[11.5px] text-teal-100 mt-0.5">
+              Step-by-step instructions &amp; portions for your matching meals.
+            </p>
+          </div>
+          <span class="text-3xl shrink-0">👨‍🍳</span>
+        </div>
+
+        <div id="prepareRegionBar" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+        <div id="prepareCardsContainer" class="space-y-4"></div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 4: HEALTHY DIET & MEDICAL CONDITIONS / ഡയറ്റ്                    -->
+      <!-- =================================================================== -->
+      <section id="panel-diet" class="tab-panel space-y-4">
+        <div class="rounded-3xl bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-700 hero-banner-pattern p-4 text-white shadow-md flex items-center justify-between gap-3">
+          <div>
+            <h2 id="dietTitle" class="text-base sm:text-lg font-extrabold text-white">Healthy Indian Plate &amp; Diet</h2>
+            <p id="dietSub" class="text-[11.5px] text-emerald-100 mt-0.5">
+              Condition-aware food guidance, portion balance, BMI &amp; water tracker.
+            </p>
+          </div>
+          <span class="text-3xl shrink-0">🥗</span>
+        </div>
+
+        <!-- Health Conditions & Disease Dietary Advisor -->
+        <div class="culinary-card border border-teal-300 rounded-3xl p-4 space-y-3.5">
+          <div class="flex items-center justify-between gap-2">
+            <h3 id="healthCondHeading" class="text-xs font-extrabold uppercase tracking-wider text-teal-800">
+              🩺 Health Conditions &amp; Food Advisor
+            </h3>
+            <span id="healthCondCountBadge" class="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[10.5px] font-bold">
+              None selected
+            </span>
+          </div>
+          <p id="healthCondSub" class="text-xs text-stone-600">
+            Select any health condition to get personalized foods to include &amp; avoid.
+          </p>
+
+          <div id="healthConditionChips" class="flex flex-wrap gap-2"></div>
+
+          <form id="customConditionForm" class="flex items-center gap-2">
+            <input
+              id="customConditionInput"
+              type="text"
+              placeholder="Other condition (e.g., Fatty Liver, PCOS, Anemia)..."
+              class="flex-1 min-w-0 rounded-xl bg-teal-50/50 border border-teal-200 px-3 py-2 text-xs text-stone-900 placeholder-stone-400 focus:outline-none focus:border-teal-500"
+            />
+            <button
+              type="submit"
+              class="pressable px-3.5 py-2 rounded-xl bg-teal-700 text-white font-extrabold text-xs shrink-0"
+            >
+              + Add
+            </button>
+          </form>
+
+          <!-- Validation Error Box -->
+          <div id="customConditionError" class="hidden rounded-xl bg-rose-50 border border-rose-300 px-3 py-2 text-xs font-bold text-rose-700 flex items-center justify-between gap-2">
+            <span id="customConditionErrorText"></span>
+            <button type="button" id="dismissConditionErrorBtn" class="text-[11px] underline shrink-0">OK</button>
+          </div>
+
+          <div id="healthGuidanceResults" class="space-y-2.5"></div>
+        </div>
+
+        <!-- Balanced Plate Guide -->
+        <div class="culinary-card rounded-3xl p-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <h3 id="plateHeading" class="text-xs font-extrabold uppercase tracking-wider text-orange-700">
+              🍽️ Balanced Indian Meal Plate (Per Person)
+            </h3>
+            <svg viewBox="0 0 60 60" class="w-11 h-11 shrink-0">
+              <circle cx="30" cy="30" r="27" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2" />
+              <path d="M 30 30 L 30 5 A 25 25 0 0 0 30 55 Z" fill="#10B981" />
+              <path d="M 30 30 L 30 5 A 25 25 0 0 1 55 30 Z" fill="#F59E0B" />
+              <path d="M 30 30 L 55 30 A 25 25 0 0 1 30 55 Z" fill="#0EA5E9" />
+            </svg>
+          </div>
+
+          <div class="space-y-2">
+            <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3">
+              <div class="flex items-center justify-between text-xs font-extrabold text-emerald-800">
+                <span id="zoneVeggiesTitle">50% Veggies &amp; Fiber</span>
+                <span>1 – 1.5 cups</span>
+              </div>
+              <p id="zoneVeggiesDesc" class="text-[11.5px] text-stone-700 mt-0.5">
+                Cabbage/Beans Thoran, Stir-fry, or Cucumber Salad
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3">
+              <div class="flex items-center justify-between text-xs font-extrabold text-amber-800">
+                <span id="zoneCarbsTitle">25% Smart Carbs</span>
+                <span>1–1.5 cups / 2–3 pcs</span>
+              </div>
+              <p id="zoneCarbsDesc" class="text-[11.5px] text-stone-700 mt-0.5">
+                1–1.5 cups cooked Rice OR 2–3 Chapatis
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-sky-50 border border-sky-200 p-3">
+              <div class="flex items-center justify-between text-xs font-extrabold text-sky-800">
+                <span id="zoneProteinTitle">25% Clean Protein</span>
+                <span>1 cup / 2 Eggs</span>
+              </div>
+              <p id="zoneProteinDesc" class="text-[11.5px] text-stone-700 mt-0.5">
+                1 cup thick Dal, Curd, Paneer, Chicken, Fish, or 2 Boiled Eggs
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- BMI, Daily Calorie & Protein Calculator -->
+        <div class="culinary-card rounded-3xl p-4 space-y-3.5">
+          <h3 id="calcHeading" class="text-xs font-extrabold uppercase tracking-wider text-teal-800">
+            📊 BMI, Daily Calorie &amp; Protein Calculator
+          </h3>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label for="weightInput" id="weightLabel" class="block text-[11px] font-bold text-stone-600 mb-1">
+                Weight (kg)
+              </label>
+              <input
+                id="weightInput"
+                type="number"
+                min="30"
+                max="200"
+                value="70"
+                class="w-full rounded-xl bg-teal-50/50 border border-teal-200 px-3 py-2.5 text-sm font-extrabold text-stone-900 focus:outline-none focus:border-teal-500"
+              />
+            </div>
+            <div>
+              <label for="heightInput" id="heightLabel" class="block text-[11px] font-bold text-stone-600 mb-1">
+                Height (cm)
+              </label>
+              <input
+                id="heightInput"
+                type="number"
+                min="120"
+                max="220"
+                value="170"
+                class="w-full rounded-xl bg-teal-50/50 border border-teal-200 px-3 py-2.5 text-sm font-extrabold text-stone-900 focus:outline-none focus:border-teal-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label for="goalSelect" id="goalLabel" class="block text-[11px] font-bold text-stone-600 mb-1">
+              Fitness &amp; Energy Goal
+            </label>
+            <select
+              id="goalSelect"
+              class="w-full rounded-xl bg-teal-50/50 border border-teal-200 px-3 py-2.5 text-xs sm:text-sm font-bold text-stone-900 focus:outline-none focus:border-teal-500"
+            >
+              <option value="maintain">Maintain Weight &amp; Steady Energy</option>
+              <option value="loss">Healthy Fat Loss (-350 kcal deficit)</option>
+              <option value="muscle">Active / Muscle Gain (+300 kcal surplus)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2.5 pt-1">
+            <div class="rounded-2xl bg-stone-50 border border-stone-200 p-3 text-center">
+              <div id="bmiResult" class="text-lg font-extrabold text-stone-900">24.2</div>
+              <div id="bmiStatus" class="text-[10px] font-extrabold text-emerald-700 uppercase">Normal BMI</div>
+            </div>
+            <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3 text-center">
+              <div id="calResult" class="text-lg font-extrabold text-amber-700">2,100</div>
+              <div id="calUnit" class="text-[10px] font-extrabold text-stone-500 uppercase">kcal / day</div>
+            </div>
+            <div class="rounded-2xl bg-teal-50 border border-teal-200 p-3 text-center">
+              <div id="proResult" class="text-lg font-extrabold text-teal-800">70g</div>
+              <div id="proUnit" class="text-[10px] font-extrabold text-stone-500 uppercase">Protein / day</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Water Intake Tracker -->
+        <div class="culinary-card rounded-3xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 id="waterHeading" class="text-xs font-extrabold uppercase tracking-wider text-sky-700">
+                💧 Daily Water Intake (8 Glasses = 2.5L)
+              </h3>
+              <p id="waterHint" class="text-[11px] text-stone-500 mt-0.5">Tap glasses as you drink today</p>
+            </div>
+            <span id="waterCounterBadge" class="px-2.5 py-1 rounded-xl bg-sky-100 border border-sky-200 text-sky-800 text-xs font-extrabold">
+              0 / 8 (0.0L)
+            </span>
+          </div>
+
+          <div id="waterGlassesGrid" class="grid grid-cols-8 gap-1.5 pt-1"></div>
+        </div>
+      </section>
+
+      <!-- =================================================================== -->
+      <!-- TAB 5: GROCERY / ലിസ്റ്റ്                                            -->
+      <!-- =================================================================== -->
+      <section id="panel-grocery" class="tab-panel space-y-4">
+        <div class="rounded-3xl bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-700 hero-banner-pattern p-4 text-white shadow-md flex items-center justify-between gap-3">
+          <div>
+            <h2 id="groceryTitle" class="text-base sm:text-lg font-extrabold text-white">Smart Grocery List</h2>
+            <p id="grocerySub" class="text-[11.5px] text-purple-100 mt-0.5">
+              Track items &amp; share directly on WhatsApp.
+            </p>
+          </div>
+          <span id="groceryCountBadge" class="px-3 py-1 rounded-xl bg-white text-purple-900 text-xs font-extrabold shrink-0 shadow-xs">
+            4 Items
+          </span>
+        </div>
+
+        <div class="culinary-card rounded-3xl p-4 space-y-4">
+          <form id="groceryForm" class="flex items-center gap-2">
+            <input
+              id="groceryInput"
+              type="text"
+              placeholder="e.g., Sona Masoori Rice, Toor Dal, Chicken..."
+              class="flex-1 rounded-xl bg-purple-50/40 border border-purple-200 px-3.5 py-3 text-sm text-stone-900 placeholder-stone-400 focus:outline-none focus:border-purple-500"
+            />
+            <button
+              id="groceryAddBtn"
+              type="submit"
+              class="pressable px-4 py-3 rounded-xl bg-purple-700 hover:bg-purple-800 text-white font-extrabold text-sm shrink-0 shadow-sm"
+            >
+              + Add
+            </button>
+          </form>
+
+          <div id="groceryListContainer" class="space-y-2"></div>
+
+          <div class="flex items-center gap-2">
+            <a
+              id="shareWhatsappBtn"
+              href="whatsapp://send?text=MealPrep%20Grocery%20List"
+              class="pressable flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-sm shadow-lg flex items-center justify-center gap-2 no-underline"
+            >
+              <span>📲</span>
+              <span id="shareWhatsappText">Share List on WhatsApp</span>
+            </a>
+
+            <button
+              id="shareNativeBtn"
+              type="button"
+              aria-label="Share via Phone Apps"
+              title="Share via Phone Apps"
+              class="pressable py-3.5 px-3.5 rounded-2xl bg-purple-100 hover:bg-purple-200 border border-purple-300 text-purple-900 font-extrabold text-sm shrink-0"
+            >
+              📤
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- FIXED BOTTOM NAVIGATION (5 TABS) -->
+    <nav class="fixed sm:sticky bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-teal-200 px-1.5 pt-2.5 pb-3.5 grid grid-cols-5 gap-1 shadow-[0_-8px_24px_rgba(15,118,110,0.1)]">
+      <button type="button" data-tab="fridge" class="nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-teal-800">
+        <span class="nav-pill px-3 py-1 rounded-full bg-teal-100 border border-teal-300 text-xl leading-none">🧊</span>
+        <span id="navLabel-fridge" class="text-xs sm:text-sm font-extrabold tracking-tight truncate max-w-full">Kitchen</span>
+      </button>
+
+      <button type="button" data-tab="combo" class="nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-stone-500">
+        <span class="nav-pill px-3 py-1 rounded-full text-xl leading-none">🍛</span>
+        <span id="navLabel-combo" class="text-xs sm:text-sm font-bold tracking-tight truncate max-w-full">Meals</span>
+      </button>
+
+      <button type="button" data-tab="prepare" class="nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-stone-500">
+        <span class="nav-pill px-3 py-1 rounded-full text-xl leading-none">👨‍🍳</span>
+        <span id="navLabel-prepare" class="text-xs sm:text-sm font-bold tracking-tight truncate max-w-full">Prepare</span>
+      </button>
+
+      <button type="button" data-tab="diet" class="nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-stone-500">
+        <span class="nav-pill px-3 py-1 rounded-full text-xl leading-none">🥗</span>
+        <span id="navLabel-diet" class="text-xs sm:text-sm font-bold tracking-tight truncate max-w-full">Diet</span>
+      </button>
+
+      <button type="button" data-tab="grocery" class="nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-stone-500">
+        <span class="nav-pill px-3 py-1 rounded-full text-xl leading-none">🛒</span>
+        <span id="navLabel-grocery" class="text-xs sm:text-sm font-bold tracking-tight truncate max-w-full">Grocery</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- INTERACTIVE 5-STEP FTUE ONBOARDING MODAL -->
+  <div
+    id="ftueModal"
+    class="hidden fixed inset-0 z-50 bg-teal-950/65 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="w-full max-w-md bg-white border-2 border-teal-200 rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto">
+
+      <div class="flex items-center justify-between gap-2">
+        <div id="ftueDotsContainer" class="flex items-center gap-1.5"></div>
+        <button
+          id="ftueSkipTurnOffBtn"
+          type="button"
+          class="pressable text-[11px] font-extrabold text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-3 py-1.5 rounded-full"
+        >
+          Skip &amp; Turn Off
+        </button>
+      </div>
+
+      <div id="ftueContentArea" class="space-y-4"></div>
+
+      <label class="flex items-center gap-2.5 rounded-2xl bg-amber-50 border border-amber-200 px-3.5 py-2.5 cursor-pointer">
+        <input
+          id="ftueDontShowAgainChk"
+          type="checkbox"
+          checked
+          class="w-4 h-4 rounded accent-teal-600 cursor-pointer"
+        />
+        <span id="ftueDontShowLabel" class="text-xs font-bold text-stone-700">
+          Don't show again on next launch
+        </span>
+      </label>
+
+      <div class="flex items-center justify-between gap-3 pt-1 border-t border-stone-200">
+        <button
+          id="ftueBackBtn"
+          type="button"
+          class="pressable px-4 py-3 rounded-2xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs sm:text-sm font-bold"
+        >
+          &larr; Back
+        </button>
+
+        <button
+          id="ftueNextBtn"
+          type="button"
+          class="pressable flex-1 py-3 px-5 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white text-xs sm:text-sm font-extrabold shadow-lg"
+        >
+          Next &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const KEYS = {
+        FTUE_DISABLED: 'mealprep_ftue_disabled_v6',
+        LANG: 'mealprep_lang_v6',
+        REGION: 'mealprep_region_v6',
+        SELECTED: 'mealprep_selected_v6',
+        CUSTOM_ITEMS: 'mealprep_custom_items_v6',
+        CONDITIONS: 'mealprep_conditions_v6',
+        CUSTOM_CONDITIONS: 'mealprep_custom_conditions_v6',
+        DIET_TOGGLES: 'mealprep_diet_toggles_v6',
+        WATER: 'mealprep_water_v6',
+        GROCERIES: 'mealprep_groceries_v6',
+        DIET: 'mealprep_diet_v6'
+      };
+
+      const INDIAN_LANGUAGES = [
+        { code: 'en', label: 'English' },
+        { code: 'ml', label: 'മലയാളം' },
+        { code: 'hi', label: 'हिन्दी' },
+        { code: 'ta', label: 'தமிழ்' },
+        { code: 'te', label: 'తెలుగు' },
+        { code: 'kn', label: 'ಕನ್ನಡ' },
+        { code: 'bn', label: 'বাংলা' },
+        { code: 'mr', label: 'मराठी' },
+        { code: 'gu', label: 'ગુજરાતી' },
+        { code: 'pa', label: 'ਪੰਜਾਬੀ' },
+        { code: 'or', label: 'ଓଡ଼ିଆ' },
+        { code: 'as', label: 'অসমীয়া' }
+      ];
+
+      const INDIAN_REGIONS = [
+        { id: 'all', icon: '🇮🇳', en: 'All India', ml: 'എല്ലാ വിഭവങ്ങളും' },
+        { id: 'south', icon: '🥥', en: 'South / Kerala', ml: 'ദക്ഷിണേന്ത്യൻ / കേരളം' },
+        { id: 'north', icon: '🫓', en: 'North India', ml: 'ഉത്തരേന്ത്യൻ' },
+        { id: 'west', icon: '🌿', en: 'West India', ml: 'പശ്ചിമേന്ത്യൻ' },
+        { id: 'east', icon: '🍚', en: 'East India', ml: 'കിഴക്കൻ ഇന്ത്യൻ' }
+      ];
+
+      // BUILT-IN INGREDIENTS WITH VEG / NON-VEG / DAIRY TAGS
+      const BUILTIN_INGREDIENTS = {
+        grains: [
+          { id: 'rice', icon: '🍚', dietType: 'veg', isDairy: false, names: { en: 'Rice', ml: 'അരി', hi: 'चावल', ta: 'அரிசி', te: 'బియ్యం', kn: 'ಅಕ್ಕಿ', bn: 'চাল', mr: 'तांदूळ', gu: 'ચોખા', pa: 'ਚੌਲ', or: 'ଚାଉଳ', as: 'চাউল' } },
+          { id: 'atta', icon: '🫓', dietType: 'veg', isDairy: false, names: { en: 'Wheat Atta', ml: 'ഗോതമ്പ് പൊടി', hi: 'गेहूं का आटा', ta: 'கோதுமை மாவு', te: 'గోధుమ పిండి', kn: 'ಗೋಧಿ ಹಿಟ್ಟು', bn: 'গম আটা', mr: 'गव्हाचे पीठ', gu: 'ઘઉંનો લોટ', pa: 'ਕਣਕ ਦਾ ਆਟਾ', or: 'ଗହମ ଅଟା', as: 'আটা' } },
+          { id: 'maida', icon: '🥐', dietType: 'veg', isDairy: false, names: { en: 'Maida (Porotta Flour)', ml: 'മൈദ (പൊറോട്ട മാവ്)', hi: 'मैदा', ta: 'மைதா', te: 'మైదా', kn: 'ಮೈದಾ', bn: 'ময়দা', mr: 'मैदा', gu: 'મેંદો', pa: 'ਮੈਦਾ', or: 'ମଇଦା', as: 'ময়দা' } },
+          { id: 'poha', icon: '🥣', dietType: 'veg', isDairy: false, names: { en: 'Poha / Oats / Rava', ml: 'അവൽ / ഓട്സ് / റവ', hi: 'पोहा / ओट्स / सूजी', ta: 'அவல் / ஓட்ஸ் / ரவை', te: 'అటుకులు / ఓట్స్ / రవ్వ', kn: 'ಅವಲಕ್ಕಿ / ಓಟ್ಸ್ / ರವೆ', bn: 'চিঁড়ে / ওটস / সুজি', mr: 'पोहे / ओट्स / रवा', gu: 'પૌંઆ / ઓટ્સ / રવો', pa: 'ਪੋਹਾ / ਓਟਸ', or: 'ଚୁଡ଼ା / ଓଟ୍ସ', as: 'চিৰা / অ’টছ' } }
+        ],
+        protein: [
+          { id: 'dal', icon: '🍲', dietType: 'veg', isDairy: false, names: { en: 'Dal / Urad / Lentils', ml: 'പരിപ്പ് / ഉഴുന്ന്', hi: 'दाल / उड़द', ta: 'பருப்பு / உளுந்து', te: 'పప్పు / మినపప్పు', kn: 'ಬೇಳೆ / ಉದ್ದು', bn: 'ডাল', mr: 'डाळ', gu: 'દાળ', pa: 'ਦਾਲ', or: 'ଡାଲି', as: 'দাইল' } },
+          { id: 'eggs', icon: '🥚', dietType: 'nonveg', isDairy: false, names: { en: 'Eggs', ml: 'മുട്ട', hi: 'अंडे', ta: 'முட்டை', te: 'గుడ్లు', kn: 'ಮೊಟ್ಟೆ', bn: 'ডিম', mr: 'अंडी', gu: 'ઈંડા', pa: 'ਆਂਡੇ', or: 'ଅଣ୍ଡା', as: 'কণী' } },
+          { id: 'chicken', icon: '🍗', dietType: 'nonveg', isDairy: false, names: { en: 'Chicken', ml: 'ചിക്കൻ (കോഴി)', hi: 'चिकन', ta: 'சிக்கன்', te: 'చికెన్', kn: 'ಚಿಕನ್', bn: 'চিকেন', mr: 'चिकन', gu: 'ચિકન', pa: 'ਚਿਕਨ', or: 'ଚିକେନ୍', as: 'চিকেন' } },
+          { id: 'fish', icon: '🐟', dietType: 'nonveg', isDairy: false, names: { en: 'Fish', ml: 'മീൻ (മത്സ്യം)', hi: 'मछली', ta: 'மீன்', te: 'చేప', kn: 'ಮೀನು', bn: 'মাছ', mr: 'मासे', gu: 'માછલી', pa: 'ਮੱਛੀ', or: 'ମାଛ', as: 'মাছ' } },
+          { id: 'paneer', icon: '🧀', dietType: 'veg', isDairy: true, names: { en: 'Paneer / Dairy', ml: 'പനീർ', hi: 'पनीर', ta: 'பனீர்', te: 'పనీర్', kn: 'ಪನೀರ್', bn: 'পনির', mr: 'पनीर', gu: 'પનીર', pa: 'ਪਨੀਰ', or: 'ପନିର୍', as: 'পনীৰ' } },
+          { id: 'curd', icon: '🥛', dietType: 'veg', isDairy: true, names: { en: 'Curd / Buttermilk', ml: 'തൈര് / മോര്', hi: 'दही / छाछ', ta: 'தயிர் / மோர்', te: 'పెరుగు / మజ్జిగ', kn: 'ಮೊಸರು / ಮಜ್ಜಿಗೆ', bn: 'দই / ঘোল', mr: 'दही / ताक', gu: 'દહીં / છાશ', pa: 'ਦਹੀਂ / ਲੱਸੀ', or: 'ଦହି / ଘୋଳ', as: 'দৈ / ঘোল' } }
+        ],
+        veg: [
+          { id: 'coconut', icon: '🥥', dietType: 'veg', isDairy: false, names: { en: 'Coconut', ml: 'തേങ്ങ', hi: 'नारियल', ta: 'தேங்காய்', te: 'కొబ్బరి', kn: 'ತೆಂಗಿನಕಾಯಿ', bn: 'নারকেল', mr: 'नारळ', gu: 'નાળિયેર', pa: 'ਨਾਰੀਅਲ', or: 'ନଡ଼ିଆ', as: 'নাৰিকল' } },
+          { id: 'beans', icon: '🥕', dietType: 'veg', isDairy: false, names: { en: 'Beans / Carrot', ml: 'ബീൻസ് / ക്യാരറ്റ്', hi: 'बीन्स / गाजर', ta: 'பீன்ஸ் / கேரட்', te: 'బీన్స్ / క్యారెట్', kn: 'ಬೀನ್ಸ್ / ಕ್ಯಾರೆಟ್', bn: 'বিনস / গাজর', mr: 'फरसबी / गाजर', gu: 'ફણસી / ગાજર', pa: 'ਬੀਨਜ਼ / ਗਾਜਰ', or: 'ବିନ୍ସ / ଗାଜର', as: 'বিন / গাজৰ' } },
+          { id: 'cabbage', icon: '🥬', dietType: 'veg', isDairy: false, names: { en: 'Cabbage', ml: 'കാബേജ്', hi: 'पत्ता गोभी', ta: 'முட்டைக்கோஸ்', te: 'క్యాబేజీ', kn: 'ಎಲೆಕೋಸು', bn: 'বাঁধাকপি', mr: 'कोबी', gu: 'કોબીજ', pa: 'ਬੰਦ ਗੋਭੀ', or: 'ବନ୍ଧାକୋବି', as: 'বন্ধাকবি' } },
+          { id: 'potato', icon: '🥔', dietType: 'veg', isDairy: false, names: { en: 'Potato / Onion', ml: 'ഉരുളക്കിഴങ്ങ് / ഉള്ളി', hi: 'आलू / प्याज', ta: 'உருளைக்கிழங்கு / வெங்காயம்', te: 'బంగాళాదుంప / ఉల్లి', kn: 'ಆಲೂಗಡ್ಡೆ / ಈರುಳ್ಳಿ', bn: 'আলু / পেঁয়াজ', mr: 'बटाटा / कांदा', gu: 'બટાકા / ડુંગળી', pa: 'ਆਲੂ / ਪਿਆਜ਼', or: 'ଆଳୁ / ପିଆଜ', as: 'আলু / পিয়াঁজ' } },
+          { id: 'spinach', icon: '🌿', dietType: 'veg', isDairy: false, names: { en: 'Spinach / Greens', ml: 'ചീര', hi: 'पालक / साग', ta: 'கீரை', te: 'ఆకుకూర', kn: 'ಸೊಪ್ಪು / ಪಾಲಕ್', bn: 'পালং শাক', mr: 'पालक / भाजी', gu: 'પાલક', pa: 'ਪਾਲਕ', or: 'ପାଳଙ୍ଗ ଶାଗ', as: 'পালেং শাক' } },
+          { id: 'okra', icon: '🫑', dietType: 'veg', isDairy: false, names: { en: 'Okra / Bhindi', ml: 'വെണ്ടയ്ക്ക', hi: 'भिंडी', ta: 'வெண்டைக்காய்', te: 'బెండకాయ', kn: 'ಬೆಂಡೆಕಾಯಿ', bn: 'ঢেঁড়স', mr: 'भेंडी', gu: 'ભીંડા', pa: 'ਭਿੰਡੀ', or: 'ଭେଣ୍ଡି', as: 'ভেন্দি' } }
+        ]
+      };
+
+      // DESI / REGIONAL NAME CONVERTER DICTIONARY
+      const DESI_SYNONYMS_MAP = [
+        { aliases: ['ari', 'chawal', 'arisi', 'biyyam', 'akki', 'chaul', 'matta rice', 'ponni', 'basmati'], targetId: 'rice', canonical: 'Rice', category: 'grains', icon: '🍚', dietType: 'veg', isDairy: false },
+        { aliases: ['atta', 'gothambu', 'gothambu podi', 'gehun', 'godhuma', 'chapati flour', 'wheat flour', 'roti flour'], targetId: 'atta', canonical: 'Wheat Atta', category: 'grains', icon: '🫓', dietType: 'veg', isDairy: false },
+        { aliases: ['maida', 'porotta flour', 'parotta flour', 'refined flour', 'all purpose flour'], targetId: 'maida', canonical: 'Maida (Porotta Flour)', category: 'grains', icon: '🥐', dietType: 'veg', isDairy: false },
+        { aliases: ['aval', 'poha', 'rava', 'sooji', 'suji', 'oats', 'upma rava', 'semolina', 'atukulu', 'avalakki'], targetId: 'poha', canonical: 'Poha / Oats / Rava', category: 'grains', icon: '🥣', dietType: 'veg', isDairy: false },
+        { aliases: ['parippu', 'dal', 'dhal', 'uzhunnu', 'urad', 'urad dal', 'toor', 'moong', 'masoor', 'chana dal', 'pappu', 'paruppu'], targetId: 'dal', canonical: 'Dal / Urad / Lentils', category: 'protein', icon: '🍲', dietType: 'veg', isDairy: false },
+        { aliases: ['mutta', 'anda', 'ande', 'muttai', 'guddu', 'motte', 'dim', 'egg'], targetId: 'eggs', canonical: 'Eggs', category: 'protein', icon: '🥚', dietType: 'nonveg', isDairy: false },
+        { aliases: ['kozhi', 'murgh', 'murgi', 'kodi', 'koli', 'chicken', 'broiler', 'nadan kozhi'], targetId: 'chicken', canonical: 'Chicken', category: 'protein', icon: '🍗', dietType: 'nonveg', isDairy: false },
+        { aliases: ['meen', 'machli', 'machhi', 'chepa', 'meenu', 'machh', 'fish', 'mathi', 'ayala', 'neymeen', 'seer fish', 'pomfret', 'prawns', 'chemmeen'], targetId: 'fish', canonical: 'Fish', category: 'protein', icon: '🐟', dietType: 'nonveg', isDairy: false },
+        { aliases: ['paneer', 'panir', 'cottage cheese', 'chenna', 'chhena'], targetId: 'paneer', canonical: 'Paneer / Dairy', category: 'protein', icon: '🧀', dietType: 'veg', isDairy: true },
+        { aliases: ['thairu', 'tayir', 'dahi', 'moru', 'chaas', 'perugu', 'mosaru', 'doi', 'yogurt', 'yoghurt', 'curd', 'buttermilk'], targetId: 'curd', canonical: 'Curd / Buttermilk', category: 'protein', icon: '🥛', dietType: 'veg', isDairy: true },
+        { aliases: ['thenga', 'nariyal', 'thengai', 'kobbari', 'tenginakayi', 'narkel', 'coconut'], targetId: 'coconut', canonical: 'Coconut', category: 'veg', icon: '🥥', dietType: 'veg', isDairy: false },
+        { aliases: ['aloo', 'alu', 'urulakizhangu', 'urulaikizhangu', 'batata', 'pyaz', 'ulli', 'savala', 'vengayam', 'kanda', 'potato', 'onion'], targetId: 'potato', canonical: 'Potato / Onion', category: 'veg', icon: '🥔', dietType: 'veg', isDairy: false },
+        { aliases: ['cheera', 'palak', 'keerai', 'saag', 'sag', 'spinach', 'moringa', 'muringayila'], targetId: 'spinach', canonical: 'Spinach / Greens', category: 'veg', icon: '🌿', dietType: 'veg', isDairy: false },
+        { aliases: ['vendakka', 'bhindi', 'bhendi', 'vendaikkai', 'bendakaya', 'bendekayi', 'okra', 'ladies finger'], targetId: 'okra', canonical: 'Okra / Bhindi', category: 'veg', icon: '🫑', dietType: 'veg', isDairy: false },
+        { aliases: ['gajar', 'carrot', 'beans', 'payar', 'acherupayar', 'french beans'], targetId: 'beans', canonical: 'Beans / Carrot', category: 'veg', icon: '🥕', dietType: 'veg', isDairy: false },
+        { aliases: ['cabbage', 'patta gobhi', 'band gobhi', 'muttaikose', 'kosu'], targetId: 'cabbage', canonical: 'Cabbage', category: 'veg', icon: '🥬', dietType: 'veg', isDairy: false }
+      ];
+
+      const HEALTH_CONDITIONS_DB = [
+        {
+          id: 'diabetes',
+          icon: '🩸',
+          en: 'Diabetes / High Sugar',
+          ml: 'പ്രമേഹം (Diabetes)',
+          avoidIds: ['rice', 'maida', 'potato'],
+          includeIds: ['dal', 'spinach', 'beans', 'eggs', 'curd', 'fish'],
+          avoidEn: 'White Rice, Maida (Kerala Porotta), Potatoes, Sugary drinks',
+          avoidMl: 'വെള്ള അരി, മൈദ (പൊറോട്ട), ഉരുളക്കിഴങ്ങ്, മധുരപാനീയങ്ങൾ',
+          includeEn: 'Dal / Lentils, Leafy Greens (Spinach), Beans, Oats, Eggs, Fish & Buttermilk',
+          includeMl: 'പരിപ്പ് വർഗ്ഗങ്ങൾ, ചീര, ബീൻസ്, ഓട്സ്, മുട്ട, മീൻ, മോര്'
+        },
+        {
+          id: 'bp',
+          icon: '💓',
+          en: 'High Blood Pressure (BP)',
+          ml: 'ഉയർന്ന രക്തസമ്മർദ്ദം (High BP)',
+          avoidIds: [],
+          includeIds: ['spinach', 'beans', 'curd', 'dal', 'poha'],
+          avoidEn: 'Excess Table Salt, Pickles, Papad, Packaged Chips & Salted Butter',
+          avoidMl: 'അമിതമായ ഉപ്പ്, അച്ചാറുകൾ, പപ്പടം, ബേക്കറി പലഹാരങ്ങൾ',
+          includeEn: 'Spinach, Potassium-rich Veggies, Fresh Curd, Oats & Unsalted Dal',
+          includeMl: 'ചീര, പച്ചക്കറികൾ, തൈര്, ഓട്സ്, ഉപ്പ് കുറച്ച പരിപ്പ് കറി'
+        },
+        {
+          id: 'cholesterol',
+          icon: '🫀',
+          en: 'High Cholesterol',
+          ml: 'കൊളസ്ട്രോൾ (Cholesterol)',
+          avoidIds: ['paneer', 'maida'],
+          includeIds: ['poha', 'dal', 'beans', 'okra', 'spinach', 'fish'],
+          avoidEn: 'Full-fat Paneer, Deep-fried snacks, Maida Porotta & Egg Yolks',
+          avoidMl: 'കൊഴുപ്പ് കൂടിയ പനീർ, എണ്ണയിൽ വറുത്ത പലഹാരങ്ങൾ, മൈദ പൊറോട്ട',
+          includeEn: 'Oats, Fish (Omega-3), Okra (Bhindi), Beans, Moong Dal & Steamed Veggies',
+          includeMl: 'ഓട്സ്, മീൻ, വെണ്ടയ്ക്ക, ബീൻസ്, ചെറുപയർ പരിപ്പ്'
+        },
+        {
+          id: 'acidity',
+          icon: '🔥',
+          en: 'Acidity / Gastric',
+          ml: 'അസിഡിറ്റി / ഗ്യാസ് (Acidity)',
+          avoidIds: ['potato', 'maida'],
+          includeIds: ['curd', 'poha', 'rice', 'okra'],
+          avoidEn: 'Heavy Spicy Masalas, Maida Porotta, Deep-fried Onion/Potato & Coffee',
+          avoidMl: 'അമിതമായ എരിവും മസാലയും, മൈദ പൊറോട്ട, എണ്ണയിൽ വറുത്തവ',
+          includeEn: 'Cool Curd / Buttermilk, Soft Poha/Idli, Steamed Rice & Okra',
+          includeMl: 'തൈര് / മോര്, അവൽ/ഇഡ്ഡലി, ചോറ്, വെണ്ടയ്ക്ക'
+        },
+        {
+          id: 'thyroid',
+          icon: '🦋',
+          en: 'Thyroid',
+          ml: 'തൈറോയ്ഡ് (Thyroid)',
+          avoidIds: ['cabbage'],
+          includeIds: ['eggs', 'fish', 'dal', 'curd', 'paneer'],
+          avoidEn: 'Raw Cabbage / Cauliflower in excess & Uncooked Soy products',
+          avoidMl: 'വേവിക്കാത്ത കാബേജ്, കോളിഫ്ലവർ, അമിതമായ സോയ ഉൽപ്പന്നങ്ങൾ',
+          includeEn: 'Cooked Eggs, Fish, Moong Dal, Curd & Paneer',
+          includeMl: 'പുഴുങ്ങിയ മുട്ട, മീൻ, ചെറുപയർ പരിപ്പ്, തൈര്, പനീർ'
+        }
+      ];
+
+      // EXPANDED INDIAN & KERALA DISH CATALOG (Dosa, Idli, Appam, Puttu, Chapati, Kerala Porotta, Chicken, Fish, Curries)
+      const DISH_CATALOG = [
+        {
+          id: 'masala_dosa_idli',
+          region: 'south',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['rice', 'dal'],
+          badgeEn: '🥞 South Indian Dosa & Idli',
+          badgeMl: '🥞 ദോശ & ഇഡ്ഡലി സ്പെഷ്യൽ',
+          cookMins: 15,
+          timerLabelEn: 'Dosa Roast & Sambar (15m)',
+          timerLabelMl: 'ദോശ & സാമ്പാർ (15 മിനിറ്റ്)',
+          titleEn: 'Crispy Golden Dosa, Soft Steamed Idli & Hot Dal Sambar',
+          titleMl: 'മൊരിഞ്ഞ ദോശ, മൃദുവായ ഇഡ്ഡലി & ചൂടുള്ള പരിപ്പ് സാമ്പാർ',
+          breakfastEn: '3 Crispy Dosa or 4 Fluffy Steamed Idlis with tempered Dal Sambar.',
+          breakfastMl: '3 മൊരിഞ്ഞ ദോശ അല്ലെങ്കിൽ 4 ആവിയിൽ വേവിച്ച ഇഡ്ഡലി + പരിപ്പ് സാമ്പാർ.',
+          lunchEn: 'Steamed Rice + Thick Dal Sambar + Roasted Papad/Salad.',
+          lunchMl: 'ചോറ് + കുറുകിയ പരിപ്പ് സാമ്പാർ.',
+          dinnerEn: '2–3 Light Kal Dosa (Soft Set Dosa) with warm Dal Sambar.',
+          dinnerMl: '2–3 മൃദുവായ കൽ ദോശ + ചൂടുള്ള പരിപ്പ് സാമ്പാർ.',
+          measurementsEn: ['1.5 cups Raw/Idli Rice + 1/2 cup Urad/Toor Dal', '1/4 tsp Fenugreek + Mustard Seeds + Curry Leaves + Turmeric'],
+          measurementsMl: ['1.5 കപ്പ് അരി + 1/2 കപ്പ് ഉഴുന്ന് / പരിപ്പ്', 'ഉലുവ + കടുക് + കറിവേപ്പില + മഞ്ഞൾപ്പൊടി'],
+          stepsEn: [
+            'Grind soaked rice and urad dal into a smooth batter; ferment overnight.',
+            'Pour a ladleful onto a hot greased tawa, swirl thin, and roast with 1/2 tsp oil until golden crisp.',
+            'Serve hot with cumin-mustard tempered dal sambar.'
+          ],
+          stepsMl: [
+            'കുതിർത്ത അരിയും ഉഴുന്നും നന്നായി അരച്ച് പുളിക്കാൻ വെക്കുക.',
+            'ചൂടായ ദോശക്കല്ലിൽ മാവ് ഒഴിച്ച് വട്ടത്തിൽ പരത്തി മൊരിച്ചെടുക്കുക.',
+            'കടുകും കറിവേപ്പിലയും താളിച്ച പരിപ്പ് സാമ്പാറിനൊപ്പം വിളമ്പുക.'
+          ]
+        },
+        {
+          id: 'kerala_porotta_chicken',
+          region: 'south',
+          dietType: 'nonveg',
+          hasDairy: false,
+          req: ['maida', 'chicken'],
+          badgeEn: '🫓🍗 Iconic Kerala Porotta & Chicken',
+          badgeMl: '🫓🍗 കേരള പൊറോട്ട & ചിക്കൻ കറി',
+          cookMins: 25,
+          timerLabelEn: 'Kerala Porotta & Chicken Roast (25m)',
+          timerLabelMl: 'പൊറോട്ട & ചിക്കൻ റോസ്റ്റ് (25 മിനിറ്റ്)',
+          titleEn: 'Flaky Layered Kerala Porotta with Spicy Nadan Chicken Curry / Roast',
+          titleMl: 'അടരുകളുള്ള കേരള പൊറോട്ടയും നാടൻ ചിക്കൻ കറിയും / റോസ്റ്റും',
+          breakfastEn: '1 Flaky Kerala Porotta + Pepper Chicken Masala.',
+          breakfastMl: '1 മൊരിഞ്ഞ കേരള പൊറോട്ട + കുരുമുളക് ചിക്കൻ മസാല.',
+          lunchEn: '2 Kerala Porottas + Nadan Chicken Roast with curry leaves.',
+          lunchMl: '2 കേരള പൊറോട്ട + കറിവേപ്പില ചേർത്ത നാടൻ ചിക്കൻ റോസ്റ്റ്.',
+          dinnerEn: '2 Hot Fluffed Kerala Porottas + Homestyle Chicken Gravy.',
+          dinnerMl: '2 ചൂടുള്ള കേരള പൊറോട്ട + നാടൻ ചിക്കൻ കറി.',
+          measurementsEn: ['2 cups Maida (Porotta Flour) + 1 tbsp Oil + Warm Water + Salt', '350g Chicken pieces + Pepper, Garam Masala, Turmeric, Ginger-Garlic & Curry Leaves'],
+          measurementsMl: ['2 കപ്പ് മൈദ + 1 ടേബിൾസ്പൂൺ എണ്ണ + ഇളം ചൂടുവെള്ളം + ഉപ്പ്', '350g ചിക്കൻ + കുരുമുളക്, ഗരം മസാല, മഞ്ഞൾപ്പൊടി, ഇഞ്ചി-വെളുത്തുള്ളി, കറിവേപ്പില'],
+          stepsEn: [
+            'Knead maida with salt, oil, and warm water into a soft pliable dough; rest for 20 mins.',
+            'Roll thin, pleat into spiral coils, flatten gently, and roast on a hot tawa; clap warm porottas to fluff layers.',
+            'Simmer marinated chicken with ginger-garlic, pepper, and curry leaves until tender and rich.'
+          ],
+          stepsMl: [
+            'മൈദ ഉപ്പും എണ്ണയും ഇളം ചൂടുവെള്ളവും ചേർത്ത് മൃദുവായി കുഴച്ച് 20 മിനിറ്റ് വെക്കുക.',
+            'നേർത്തതായി പരത്തി ചുരുട്ടി വീണ്ടും പരത്തി തവയിൽ ചുട്ടെടുത്ത് ചൂടോടെ അടിച്ചെടുക്കുക.',
+            'ഇഞ്ചി-വെളുത്തുള്ളി, കുരുമുളക്, കറിവേപ്പില എന്നിവ ചേർത്ത് ചിക്കൻ നന്നായി വേവിച്ചെടുക്കുക.'
+          ]
+        },
+        {
+          id: 'kerala_porotta_veg_kurma',
+          region: 'south',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['maida', 'potato'],
+          badgeEn: '🫓🥔 Kerala Porotta & Potato Kurma',
+          badgeMl: '🫓🥔 കേരള പൊറോട്ട & ഉരുളക്കിഴങ്ങ് കുറുമ',
+          cookMins: 20,
+          timerLabelEn: 'Porotta & Kurma Prep (20m)',
+          timerLabelMl: 'പൊറോട്ട & കുറുമ (20 മിനിറ്റ്)',
+          titleEn: 'Flaky Kerala Porotta with Homestyle Onion-Potato Masala Kurma',
+          titleMl: 'കേരള പൊറോട്ടയും ഉള്ളി-ഉരുളക്കിഴങ്ങ് മസാല കുറുമയും',
+          breakfastEn: '2 Kerala Porottas + Mild Spiced Potato-Onion Stew.',
+          breakfastMl: '2 കേരള പൊറോട്ട + ഉരുളക്കിഴങ്ങ്-ഉള്ളി കുറുമ.',
+          lunchEn: '2 Flaky Porottas + Rich Pepper-Fennel Potato Masala.',
+          lunchMl: '2 കേരള പൊറോട്ട + കുരുമുളകും പെരുംജീരകവും ചേർത്ത ഉരുളക്കിഴങ്ങ് കറി.',
+          dinnerEn: '2 Warm Kerala Porottas + Homestyle Potato-Onion Gravy.',
+          dinnerMl: '2 ചൂടുള്ള കേരള പൊറോട്ട + ഉരുളക്കിഴങ്ങ്-ഉള്ളി കറി.',
+          measurementsEn: ['2 cups Maida + 1 tbsp Oil + Warm Water', '3 Potatoes + 2 Onions + Fennel Seeds, Turmeric, Pepper & Curry Leaves'],
+          measurementsMl: ['2 കപ്പ് മൈദ + 1 ടേബിൾസ്പൂൺ എണ്ണ + വെള്ളം', '3 ഉരുളക്കിഴങ്ങ് + 2 ഉള്ളി + പെരുംജീരകം, മഞ്ഞൾപ്പൊടി, കറിവേപ്പില'],
+          stepsEn: [
+            'Knead soft maida dough, rest 15 mins, pleat into spiral layers, and roast on tawa.',
+            'Sauté sliced onions, fennel, and curry leaves; add diced potatoes and simmer with turmeric & pepper.'
+          ],
+          stepsMl: [
+            'മൈദ കുഴച്ച് 15 മിനിറ്റ് വെച്ച ശേഷം വീശി ചുരുട്ടി പരത്തി തവയിൽ ചുട്ടെടുക്കുക.',
+            'ഉള്ളിയും പെരുംജീരകവും കറിവേപ്പിലയും വഴറ്റി ഉരുളക്കിഴങ്ങും മസാലയും ചേർത്ത് വേവിക്കുക.'
+          ]
+        },
+        {
+          id: 'kerala_fish_curry_rice',
+          region: 'south',
+          dietType: 'nonveg',
+          hasDairy: false,
+          req: ['rice', 'fish'],
+          badgeEn: '🐟🍚 Kerala Fish Curry & Meals',
+          badgeMl: '🐟🍚 കേരള മീൻ കറിയും ചോറും',
+          cookMins: 18,
+          timerLabelEn: 'Fish Curry Simmer (18m)',
+          timerLabelMl: 'മീൻ കറി വേവിക്കാൻ (18 മിനിറ്റ്)',
+          titleEn: 'Steamed Rice + Spicy Kudampuli / Malabar Fish Curry & Pan-Fried Fish',
+          titleMl: 'ചോറ് + കുടംപുളി ഇട്ട നാടൻ മീൻ കറി & മീൻ വറുത്തത്',
+          breakfastEn: 'Warm Rice Kanji (Porridge) with pan-roasted Fish.',
+          breakfastMl: 'ചൂടുള്ള കഞ്ഞിയും മീൻ വറുത്തതും.',
+          lunchEn: '1.5 cups Steamed Rice + Tangy Kerala Fish Curry + Tawa Fish Fry.',
+          lunchMl: '1.5 കപ്പ് ചോറ് + കുടംപുളി ഇട്ട നാടൻ മീൻ കറി + മീൻ വറുത്തത്.',
+          dinnerEn: '1 cup Rice + Light Pepper-Turmeric Fish Stew.',
+          dinnerMl: '1 കപ്പ് ചോറ് + കുരുമുളക് ചേർത്ത മീൻ കറി.',
+          measurementsEn: ['1.5 cups Rice', '350g Fish steaks (cleaned)', 'Chili powder, Turmeric, Ginger, Garlic, Curry Leaves & Kudampuli/Tamarind'],
+          measurementsMl: ['1.5 കപ്പ് അരി', '350g മീൻ കഷ്ണങ്ങൾ', 'മുളകുപൊടി, മഞ്ഞൾപ്പൊടി, ഇഞ്ചി, വെളുത്തുള്ളി, കറിവേപ്പില, കുടംപുളി'],
+          stepsEn: [
+            'Cook rice until fluffy (15 mins).',
+            'Simmer ginger, garlic, chili, turmeric, and tamarind/kudampuli in water; gently slide in fish pieces for 10 mins.',
+            'Pan-sear 2 fish steaks with pepper-turmeric paste for lunch.'
+          ],
+          stepsMl: [
+            'അരി നന്നായി വേവിച്ചെടുക്കുക (15 മിനിറ്റ്).',
+            'ഇഞ്ചി, വെളുത്തുള്ളി, മുളകുപൊടി, മഞ്ഞൾപ്പൊടി, കുടംപുളി എന്നിവ തിളപ്പിച്ച് മീൻ കഷ്ണങ്ങൾ ചേർത്ത് 10 മിനിറ്റ് വേവിക്കുക.',
+            '2 കഷ്ണം മീൻ മസാല പുരട്ടി തവയിൽ വറുത്തെടുക്കുക.'
+          ]
+        },
+        {
+          id: 'appam_puttu_coconut',
+          region: 'south',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['rice', 'coconut'],
+          badgeEn: '🥥🥞 Kerala Appam / Puttu & Coconut',
+          badgeMl: '🥥🥞 കേരള അപ്പം / പുട്ട് & തേങ്ങ',
+          cookMins: 15,
+          timerLabelEn: 'Puttu / Appam Steam (15m)',
+          timerLabelMl: 'പുട്ട് / അപ്പം ആവികയറ്റാൻ (15 മിനിറ്റ്)',
+          titleEn: 'Steamed Kerala Puttu / Lace-Edged Appam with Fresh Coconut',
+          titleMl: 'ആവിയിൽ വേവിച്ച കേരള പുട്ട് / പാലപ്പം & തേങ്ങ',
+          breakfastEn: '2 Cylinders of Steamed Rice Puttu layered with fresh grated Coconut.',
+          breakfastMl: 'തേങ്ങ ചിരകിയത് ചേർത്ത 2 കുറ്റി ആവിയിൽ വേവിച്ച പുട്ട്.',
+          lunchEn: 'Coconut-tempered Rice (Thengai Sadam) with curry leaves.',
+          lunchMl: 'തേങ്ങയും കറിവേപ്പിലയും താളിച്ച തേങ്ങാച്ചോറ്.',
+          dinnerEn: '3 Soft Lace-Edged Appams with sweet or spiced Coconut Milk.',
+          dinnerMl: '3 മൃദുവായ പാലപ്പം + തേങ്ങാപ്പാൽ.',
+          measurementsEn: ['1.5 cups Rice / Puttu Flour', '1 cup freshly grated Coconut', 'Pinch of Salt & Cumin'],
+          measurementsMl: ['1.5 കപ്പ് അരി / പുട്ടുപൊടി', '1 കപ്പ് ചിരകിയ തേങ്ങ', 'ഉപ്പ് & ജീരകം'],
+          stepsEn: [
+            'Moisten rice flour with salted water until crumbly; layer with grated coconut in a puttu maker and steam for 6 mins.',
+            'For lunch, toss cooked rice with roasted coconut, mustard seeds, and curry leaves.'
+          ],
+          stepsMl: [
+            'പുട്ടുപൊടി ഉപ്പുവെള്ളം തളിച്ച് നനച്ച് തേങ്ങ ഇടവിട്ട് നിറച്ച് 6 മിനിറ്റ് ആവിയിൽ വേവിക്കുക.',
+            'ഉച്ചയ്ക്ക് ചോറിൽ തേങ്ങയും കടുകും കറിവേപ്പിലയും വറുത്തിടുക.'
+          ]
+        },
+        {
+          id: 'chapati_chicken_curry',
+          region: 'north',
+          dietType: 'nonveg',
+          hasDairy: false,
+          req: ['atta', 'chicken'],
+          badgeEn: '🫓🍗 Whole Wheat Chapati & Chicken',
+          badgeMl: '🫓🍗 ചപ്പാത്തി & ചിക്കൻ കറി',
+          cookMins: 20,
+          timerLabelEn: 'Chapati & Chicken Cook (20m)',
+          timerLabelMl: 'ചപ്പാത്തി & ചിക്കൻ (20 മിനിറ്റ്)',
+          titleEn: 'Soft Whole Wheat Chapatis with Homestyle Chicken Masala',
+          titleMl: 'മൃദുവായ ഗോതമ്പ് ചപ്പാത്തിയും ചിക്കൻ മസാലയും',
+          breakfastEn: '2 Chapatis rolled with shredded Pepper Chicken.',
+          breakfastMl: 'കുരുമുളക് ചിക്കൻ വെച്ച 2 ചപ്പാത്തി റോൾ.',
+          lunchEn: '3 Chapatis + Homestyle Chicken Curry.',
+          lunchMl: '3 ചപ്പാത്തി + നാടൻ ചിക്കൻ കറി.',
+          dinnerEn: '2–3 Fresh Phulkas + Light Chicken Stew.',
+          dinnerMl: '2–3 ചൂടുള്ള ചപ്പാത്തി + ചിക്കൻ കറി.',
+          measurementsEn: ['1.5 cups Whole Wheat Atta', '350g Chicken pieces', 'Turmeric, Garam Masala, Pepper, Ginger-Garlic & Oil'],
+          measurementsMl: ['1.5 കപ്പ് ഗോതമ്പ് പൊടി', '350g ചിക്കൻ', 'മഞ്ഞൾപ്പൊടി, ഗരം മസാല, കുരുമുളക്, ഇഞ്ചി-വെളുത്തുള്ളി'],
+          stepsEn: [
+            'Knead wheat atta with warm water and rest dough for 10 mins; cook 6 soft chapatis.',
+            'Sauté ginger-garlic and spices, add chicken pieces, and cook covered for 15 mins.'
+          ],
+          stepsMl: [
+            'ഗോതമ്പ് പൊടി കുഴച്ച് 10 മിനിറ്റ് വെച്ച ശേഷം 6 ചപ്പാത്തി ചുട്ടെടുക്കുക.',
+            'ഇഞ്ചി-വെളുത്തുള്ളിയും മസാലയും വഴറ്റി ചിക്കൻ ചേർത്ത് 15 മിനിറ്റ് വേവിക്കുക.'
+          ]
+        },
+        {
+          id: 'chapati_dal_sabzi',
+          region: 'north',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['atta', 'dal'],
+          badgeEn: '🫓🍲 Chapati & Dal Tadka',
+          badgeMl: '🫓🍲 ചപ്പാത്തി & പരിപ്പ് കറി',
+          cookMins: 15,
+          timerLabelEn: 'Chapati & Dal (15m)',
+          timerLabelMl: 'ചപ്പാത്തി & പരിപ്പ് (15 മിനിറ്റ്)',
+          titleEn: 'Soft Whole Wheat Chapatis with Tempered Dal Tadka',
+          titleMl: 'മൃദുവായ ചപ്പാത്തിയും ജീരകം താളിച്ച പരിപ്പ് കറിയും',
+          breakfastEn: '2 Chapatis + Thick Moong Dal.',
+          breakfastMl: '2 ചപ്പാത്തി + ചെറുപയർ പരിപ്പ് കറി.',
+          lunchEn: '3 Chapatis + Tempered Toor Dal Tadka.',
+          lunchMl: '3 ചപ്പാത്തി + പരിപ്പ് കറി.',
+          dinnerEn: '2–3 Freshly Puffed Phulkas + Dal.',
+          dinnerMl: '2–3 ചൂടുള്ള ഫുൽക്ക ചപ്പാത്തി + പരിപ്പ് കറി.',
+          measurementsEn: ['1.5 cups Whole Wheat Atta', '1 cup Dal + Turmeric + Cumin + Salt'],
+          measurementsMl: ['1.5 കപ്പ് ഗോതമ്പ് പൊടി', '1 കപ്പ് പരിപ്പ് + മഞ്ഞൾപ്പൊടി + ജീരകം + ഉപ്പ്'],
+          stepsEn: [
+            'Pressure cook dal for 12 mins and temper with cumin seeds.',
+            'Knead wheat atta and cook soft puffed chapatis on a hot tawa.'
+          ],
+          stepsMl: [
+            'പരിപ്പ് 12 മിനിറ്റ് വേവിച്ച് ജീരകം താളിക്കുക.',
+            'ഗോതമ്പ് പൊടി കുഴച്ച് ചൂടുള്ള തവയിൽ ചപ്പാത്തി ചുട്ടെടുക്കുക.'
+          ]
+        },
+        {
+          id: 'rava_upma_poha',
+          region: 'west',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['poha'],
+          badgeEn: '🥣 10-Min Rava Upma / Poha',
+          badgeMl: '🥣 10-മിനിറ്റ് ഉപ്പുമാവ് / അവൽ',
+          cookMins: 10,
+          timerLabelEn: 'Upma / Poha Prep (10m)',
+          timerLabelMl: 'ഉപ്പുമാവ് / അവൽ (10 മിനിറ്റ്)',
+          titleEn: 'Mustard & Curry Leaf Rava Upma / Tempered Kanda Poha',
+          titleMl: 'കടുകും കറിവേപ്പിലയും താളിച്ച റവ ഉപ്പുമാവ് / അവൽ',
+          breakfastEn: 'Hot Rava Upma or Steamed Poha with roasted cumin & curry leaves (8 mins).',
+          breakfastMl: 'കടുകും കറിവേപ്പിലയും താളിച്ച ചൂടുള്ള റവ ഉപ്പുമാവ് / അവൽ (8 മിനിറ്റ്).',
+          lunchEn: 'Lemon-tempered Poha / Savory Oats bowl.',
+          lunchMl: 'നാരങ്ങാനീര് ചേർത്ത അവൽ / ഓട്സ് വിഭവം.',
+          dinnerEn: 'Light Vegetable-style Oats / Rava Porridge.',
+          dinnerMl: 'ലഘുവായ ഓട്സ് / റവ കഞ്ഞി.',
+          measurementsEn: ['1.5 cups Rava (Sooji), Poha, or Oats', '1/2 tsp Mustard Seeds + Curry Leaves + Turmeric + Oil'],
+          measurementsMl: ['1.5 കപ്പ് റവ, അവൽ, അല്ലെങ്കിൽ ഓട്സ്', 'കടുക് + കറിവേപ്പില + മഞ്ഞൾപ്പൊടി + എണ്ണ'],
+          stepsEn: [
+            'Temper mustard seeds and curry leaves in 1 tsp oil.',
+            'Add roasted rava with hot water (or rinsed poha) and cook for 4 mins until fluffy.'
+          ],
+          stepsMl: [
+            '1 ടീസ്പൂൺ എണ്ണയിൽ കടുകും കറിവേപ്പിലയും താളിക്കുക.',
+            'വറുത്ത റവയും ചൂടുവെള്ളവും (അല്ലെങ്കിൽ കഴുകിയ അവൽ) ചേർത്ത് 4 മിനിറ്റ് വേവിക്കുക.'
+          ]
+        },
+        {
+          id: 'eggs_only_omelette',
+          region: 'all',
+          dietType: 'nonveg',
+          hasDairy: false,
+          req: ['eggs'],
+          badgeEn: '🥚 Quick Egg-Only Special',
+          badgeMl: '🥚 മുട്ട മാത്രം കൊണ്ടുള്ള വിഭവം',
+          cookMins: 10,
+          timerLabelEn: 'Egg Boil & Masala Prep (10m)',
+          timerLabelMl: 'മുട്ട വേവിക്കാൻ (10 മിനിറ്റ്)',
+          titleEn: 'Fluffy Masala Omelette, Boiled Egg Pepper Fry & Egg Bhurji',
+          titleMl: 'മസാല ഓംലെറ്റ്, പുഴുങ്ങിയ മുട്ട കുരുമുളക് ഫ്രൈ & മുട്ട ബുർജി',
+          breakfastEn: '2-Egg Fluffy Omelette with black pepper, turmeric & curry leaves (5 mins).',
+          breakfastMl: 'കുരുമുളകും കറിവേപ്പിലയും ചേർത്ത മസാല ഓംലെറ്റ് (5 മിനിറ്റ്).',
+          lunchEn: '2 Boiled Eggs tossed in mild pepper-cumin masala.',
+          lunchMl: 'കുരുമുളക്-ജീരക മസാല പുരട്ടിയ 2 പുഴുങ്ങിയ മുട്ട.',
+          dinnerEn: 'Soft Scrambled Egg Bhurji seasoned with turmeric & ginger.',
+          dinnerMl: 'മഞ്ഞൾപ്പൊടിയും ഇഞ്ചിയും ചേർത്ത മൃദുവായ മുട്ട ബുർജി.',
+          measurementsEn: ['4 to 6 Eggs', '1/2 tsp Black Pepper + 1/4 tsp Turmeric + Salt + 1 tsp Oil'],
+          measurementsMl: ['4 മുതൽ 6 മുട്ട', 'കുരുമുളക് + മഞ്ഞൾപ്പൊടി + ഉപ്പ് + എണ്ണ'],
+          stepsEn: [
+            'Boil 2–3 eggs in water for 8–10 minutes for lunch.',
+            'Whisk 2 eggs with salt and pepper; cook on a medium-hot pan for 2 minutes for breakfast.',
+            'Scramble remaining eggs on low flame with a pinch of turmeric for dinner.'
+          ],
+          stepsMl: [
+            'ഉച്ചഭക്ഷണത്തിനായി 2–3 മുട്ട 8–10 മിനിറ്റ് പുഴുങ്ങുക.',
+            'രാവിലെ 2 മുട്ട അടിച്ചു ഓംലെറ്റ് ഉണ്ടാക്കുക.',
+            'രാത്രി ബാക്കി മുട്ട ചിക്കിപ്പൊരിച്ചെടുക്കുക.'
+          ]
+        },
+        {
+          id: 'paneer_only_tikka',
+          region: 'north',
+          dietType: 'veg',
+          hasDairy: true,
+          req: ['paneer'],
+          badgeEn: '🧀 Protein-Rich Paneer Special',
+          badgeMl: '🧀 പനീർ വിഭവം (Dairy)',
+          cookMins: 12,
+          timerLabelEn: 'Tawa Paneer Roast (12m)',
+          timerLabelMl: 'പനീർ റോസ്റ്റ് (12 മിനിറ്റ്)',
+          titleEn: 'Tawa Paneer Tikka & Spiced Paneer Bhurji',
+          titleMl: 'തവ പനീർ ടിക്ക & മസാല പനീർ ബുർജി',
+          breakfastEn: 'Crumbled Paneer Bhurji with turmeric & cumin (8 mins).',
+          breakfastMl: 'മഞ്ഞൾപ്പൊടിയും ജീരകവും ചേർത്ത പനീർ ബുർജി (8 മിനിറ്റ്).',
+          lunchEn: 'Pan-seared Tawa Paneer cubes with chaat masala & black pepper.',
+          lunchMl: 'ചാട്ട് മസാലയും കുരുമുളകും ചേർത്ത തവ പനീർ.',
+          dinnerEn: 'Light Herb & Pepper Grilled Paneer strips.',
+          dinnerMl: 'കുരുമുളക് ചേർത്ത് ഗ്രിൽ ചെയ്ത പനീർ കഷ്ണങ്ങൾ.',
+          measurementsEn: ['200g Fresh Paneer', '1/2 tsp Cumin + Turmeric + Pepper + Salt + 1 tsp Oil'],
+          measurementsMl: ['200g പനീർ', 'ജീരകം + മഞ്ഞൾപ്പൊടി + കുരുമുളക് + ഉപ്പ് + എണ്ണ'],
+          stepsEn: [
+            'Cut half the paneer into cubes and crumble the other half.',
+            'Toast paneer cubes on a greased tawa for 4 mins; sauté crumbled paneer with cumin and turmeric.'
+          ],
+          stepsMl: [
+            'പകുതി പനീർ കഷ്ണങ്ങളാക്കിയും ബാക്കി പൊടിച്ചും വെക്കുക.',
+            'തവയിൽ പനീർ കഷ്ണങ്ങൾ മൊരിച്ചെടുക്കുക; പൊടിച്ച പനീർ മസാല ചേർത്ത് വഴറ്റുക.'
+          ]
+        },
+        {
+          id: 'kerala_dal_thoran',
+          region: 'south',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['rice', 'atta', 'dal', 'beans'],
+          badgeEn: '🥥 South / Kerala Full Meal',
+          badgeMl: '🥥 കേരള സ്പെഷ്യൽ മുഴുവൻ മീൽ',
+          cookMins: 15,
+          timerLabelEn: 'Rice & Dal Cook (15m)',
+          timerLabelMl: 'ചോറും പരിപ്പും വേവിക്കാൻ (15 മിനിറ്റ്)',
+          titleEn: 'Chapati + Dal (Breakfast/Dinner) & Rice + Parippu + Beans Thoran (Lunch)',
+          titleMl: 'ചപ്പാത്തി + പരിപ്പ് (പ്രഭാതം/രാത്രി) & ചോറ് + പരിപ്പ് + ബീൻസ് തോരൻ (ഉച്ച)',
+          breakfastEn: '2 Soft Chapatis + Warm Moong Dal.',
+          breakfastMl: '2 മൃദുവായ ചപ്പാത്തി + ചെറുപയർ പരിപ്പ് കറി.',
+          lunchEn: '1.5 cups Rice + Parippu Curry + Beans/Carrot Thoran.',
+          lunchMl: '1.5 കപ്പ് ചോറ് + പരിപ്പ് കറി + ബീൻസ്/ക്യാരറ്റ് തോരൻ.',
+          dinnerEn: '2–3 Freshly Puffed Chapatis + Dal Curry.',
+          dinnerMl: '2–3 ചൂടുള്ള ചപ്പാത്തി + പരിപ്പ് കറി.',
+          measurementsEn: ['1.5 cups Rice + 1.5 cups Wheat Atta', '1 cup Moong/Toor Dal + 2 cups chopped Beans/Carrot'],
+          measurementsMl: ['1.5 കപ്പ് അരി + 1.5 കപ്പ് ഗോതമ്പ് പൊടി', '1 കപ്പ് പരിപ്പ് + 2 കപ്പ് അരിഞ്ഞ ബീൻസ്/ക്യാരറ്റ്'],
+          stepsEn: [
+            'Pressure cook rice and dal in separate cookers (12 mins).',
+            'Stir-fry chopped beans/carrot with mustard seeds and curry leaves for 8 mins; cook chapatis.'
+          ],
+          stepsMl: [
+            'അരിയും പരിപ്പും കുക്കറിൽ വേവിക്കുക (12 മിനിറ്റ്).',
+            'അരിഞ്ഞ ബീൻസ്/ക്യാരറ്റ് കടുകും കറിവേപ്പിലയും താളിച്ച് 8 മിനിറ്റ് വേവിക്കുക; ചപ്പാത്തി ചുട്ടെടുക്കുക.'
+          ]
+        },
+        {
+          id: 'curd_rice_combo',
+          region: 'south',
+          dietType: 'veg',
+          hasDairy: true,
+          req: ['rice', 'curd'],
+          badgeEn: '🥛 Cooling Probiotic Meal',
+          badgeMl: '🥛 തൈര് സാദം (Curd Rice)',
+          cookMins: 10,
+          timerLabelEn: 'Rice & Tadka Prep (10m)',
+          timerLabelMl: 'തൈര് സാദം തയ്യാറാക്കാൻ (10 മിനിറ്റ്)',
+          titleEn: 'South Indian Tempered Curd Rice (Thayir Sadam)',
+          titleMl: 'തെന്നിന്ത്യൻ തൈര് സാദം',
+          breakfastEn: 'Light Probiotic Curd Bowl.',
+          breakfastMl: 'തൈര് ബൗൾ.',
+          lunchEn: 'Chilled Tempered Curd Rice with mustard seeds, ginger & curry leaves.',
+          lunchMl: 'കടുകും ഇഞ്ചിയും കറിവേപ്പിലയും താളിച്ച തൈര് സാദം.',
+          dinnerEn: 'Soothing Curd Rice for easy digestion.',
+          dinnerMl: 'ദഹനത്തിന് ഏറെ നല്ലതായ തൈര് സാദം.',
+          measurementsEn: ['1.5 cups soft-cooked Rice + 1 cup fresh Curd', '1/2 tsp Mustard Seeds, Ginger & Curry Leaves'],
+          measurementsMl: ['1.5 കപ്പ് വെന്ത ചോറ് + 1 കപ്പ് തൈര്', 'കടുക്, ഇഞ്ചി & കറിവേപ്പില'],
+          stepsEn: [
+            'Mash warm cooked rice lightly, cool 5 mins, mix in curd and salt, and top with tadka.'
+          ],
+          stepsMl: [
+            'വെന്ത ചോറ് ചെറുതായി ഉടച്ച് തൈരും ഉപ്പും ചേർത്ത് ഇളക്കി കടുകും കറിവേപ്പിലയും താളിക്കുക.'
+          ]
+        },
+        {
+          id: 'rice_only_jeera',
+          region: 'all',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['rice'],
+          badgeEn: '🍚 Rice-Only Staple',
+          badgeMl: '🍚 അരി മാത്രം കൊണ്ടുള്ള വിഭവം',
+          cookMins: 12,
+          timerLabelEn: 'Steamed / Jeera Rice (12m)',
+          timerLabelMl: 'ചോറ് വേവിക്കാൻ (12 മിനിറ്റ്)',
+          titleEn: 'Aromatic Jeera Rice & Steamed Rice',
+          titleMl: 'ജീര റൈസ് & ആവിയിൽ വേവിച്ച ചോറ്',
+          breakfastEn: 'Warm Rice Kanji (Porridge) with a pinch of salt.',
+          breakfastMl: 'ഉപ്പ് ചേർത്ത ചൂടുള്ള കഞ്ഞി.',
+          lunchEn: '1.5 cups Cumin-tempered Jeera Rice.',
+          lunchMl: '1.5 കപ്പ് ജീരകം താളിച്ച ചോറ് (ജീര റൈസ്).',
+          dinnerEn: '1 cup Light Steamed Rice.',
+          dinnerMl: '1 കപ്പ് ആവിയിൽ വേവിച്ച ചോറ്.',
+          measurementsEn: ['1.5 cups Raw Rice + 3 cups Water + 1/2 tsp Cumin Seeds + 1 tsp Oil'],
+          measurementsMl: ['1.5 കപ്പ് അരി + 3 കപ്പ് വെള്ളം + ജീരകം + എണ്ണ'],
+          stepsEn: [
+            'Sauté cumin seeds in 1 tsp oil, add washed rice and water, and cook until fluffy.'
+          ],
+          stepsMl: [
+            'എണ്ണയിൽ ജീരകം മൂപ്പിച്ച് അരിയും വെള്ളവും ചേർത്ത് വേവിക്കുക.'
+          ]
+        },
+        {
+          id: 'atta_only_roti',
+          region: 'north',
+          dietType: 'veg',
+          hasDairy: false,
+          req: ['atta'],
+          badgeEn: '🫓 Wheat Atta Staple',
+          badgeMl: '🫓 ഗോതമ്പ് പൊടി വിഭവങ്ങൾ',
+          cookMins: 12,
+          timerLabelEn: 'Chapati Dough & Roast (12m)',
+          timerLabelMl: 'ചപ്പാത്തി തയ്യാറാക്കാൻ (12 മിനിറ്റ്)',
+          titleEn: 'Soft Puffed Phulkas & Layered Parathas',
+          titleMl: 'മൃദുവായ ഫുൽക്ക ചപ്പാത്തി & പറാത്ത',
+          breakfastEn: '2 Whole Wheat Ajwain/Jeera Parathas.',
+          breakfastMl: '2 ജീരക ഗോതമ്പ് പറാത്ത.',
+          lunchEn: '3 Soft Chapatis wrapped in cotton cloth.',
+          lunchMl: '3 മൃദുവായ ചപ്പാത്തി.',
+          dinnerEn: '2–3 Freshly Puffed Phulkas.',
+          dinnerMl: '2–3 ചൂടുള്ള ഫുൽക്ക ചപ്പാത്തി.',
+          measurementsEn: ['1.5 cups Whole Wheat Atta + 3/4 cup Warm Water + Pinch of Salt'],
+          measurementsMl: ['1.5 കപ്പ് ഗോതമ്പ് പൊടി + 3/4 കപ്പ് ഇളം ചൂടുവെള്ളം + ഉപ്പ്'],
+          stepsEn: [
+            'Knead wheat atta with warm water into a soft dough; rest 10 mins, roll, and cook on hot tawa.'
+          ],
+          stepsMl: [
+            'ഗോതമ്പ് പൊടി കുഴച്ച് 10 മിനിറ്റ് വെച്ച ശേഷം പരത്തി ചൂടുള്ള തവയിൽ ചുട്ടെടുക്കുക.'
+          ]
+        }
+      ];
+
+      const BASE_EN = {
+        headerSub: 'Indian Meal & Healthy Diet Planner',
+        navFridge: 'Kitchen',
+        navCombo: 'Meals',
+        navPrepare: 'Prepare',
+        navDiet: 'Diet',
+        navGrocery: 'Grocery',
+        fridgeTitle: "What's in your kitchen today?",
+        fridgeSub: 'Tap available items or type Desi names via + Add below.',
+        selectedSuffix: 'Selected',
+        clearBtn: 'Clear',
+        catGrains: 'Staples & Grains',
+        catProtein: 'Proteins (Dal / Eggs / Chicken / Fish / Paneer / Curd)',
+        catVeg: 'Vegetables & Coconut',
+        genPlanBtn: 'See Matching Meals',
+        comboTitle: 'Matching Meals',
+        comboSub: 'Dosa, Chapati, Kerala Porotta & Indian dishes matched to your items.',
+        editFridgeBtn: '+ Edit Items',
+        breakfastLabel: 'Breakfast',
+        lunchLabel: 'Lunch',
+        dinnerLabel: 'Dinner',
+        viewRecipeBtn: 'How to Prepare →',
+        emptySelectTitle: 'No kitchen items selected yet',
+        emptySelectBody: 'Please select any available items from your kitchen so we can suggest matching dishes for you 😊',
+        emptySelectBtn: 'Go to Kitchen & Select Items →',
+        noMatchTitle: 'Select one more staple to unlock full meals',
+        noMatchBody: 'Add Rice, Wheat Atta, Maida, Dal, Chicken, Fish, or Eggs in the Kitchen tab to see matching dishes 😊',
+        prepareTitle: 'How to Prepare',
+        prepareSub: 'Step-by-step instructions & portions for your matching meals.',
+        ingredientsHeading: 'Measurements (For 2 People)',
+        stepsHeading: 'Cooking Steps',
+        healthCondHeading: '🩺 Health Conditions & Food Advisor',
+        healthCondSub: 'Select any health condition to get personalized foods to include & avoid.',
+        avoidLabel: '❌ Foods to Avoid / Limit:',
+        includeLabel: '✅ Foods to Include More:',
+        dietTitle: 'Healthy Indian Plate & Diet',
+        dietSub: 'Condition-aware food guidance, portion balance, BMI & water tracker.',
+        plateHeading: '🍽️ Balanced Indian Meal Plate (Per Person)',
+        zoneVeggiesTitle: '50% Veggies & Fiber',
+        zoneVeggiesDesc: 'Cabbage/Beans Thoran, Stir-fry, or Cucumber Salad',
+        zoneCarbsTitle: '25% Smart Carbs',
+        zoneCarbsDesc: '1–1.5 cups cooked Rice OR 2–3 Chapatis',
+        zoneProteinTitle: '25% Clean Protein',
+        zoneProteinDesc: '1 cup thick Dal, Curd, Paneer, Chicken, Fish, or 2 Boiled Eggs',
+        calcHeading: '📊 BMI, Daily Calorie & Protein Calculator',
+        weightLabel: 'Weight (kg)',
+        heightLabel: 'Height (cm)',
+        goalLabel: 'Fitness & Energy Goal',
+        goalMaintain: 'Maintain Weight & Steady Energy',
+        goalLoss: 'Healthy Fat Loss (-350 kcal deficit)',
+        goalMuscle: 'Active / Muscle Gain (+300 kcal surplus)',
+        bmiNormal: 'Normal BMI',
+        bmiUnder: 'Underweight',
+        bmiOver: 'Overweight',
+        calUnit: 'kcal / day',
+        proUnit: 'Protein / day',
+        waterHeading: '💧 Daily Water Intake (8 Glasses = 2.5L)',
+        waterHint: 'Tap glasses as you drink today',
+        groceryTitle: 'Smart Grocery List',
+        grocerySub: 'Track items & share directly on WhatsApp.',
+        itemsSuffix: 'Items',
+        groceryPlaceholder: 'e.g., Sona Masoori Rice, Toor Dal, Chicken...',
+        groceryAdd: '+ Add',
+        shareWhatsapp: 'Share List on WhatsApp',
+        emptyGrocery: 'Your grocery list is empty. Add items above!',
+        ftueSkipTurnOff: 'Skip & Turn Off',
+        ftueDontShow: "Don't show again on next launch",
+        ftueBack: '← Back',
+        ftueNext: 'Next →',
+        ftueFinish: 'Get Started ✓'
+      };
+
+      const TRANSLATIONS = {
+        en: BASE_EN,
+        ml: {
+          ...BASE_EN,
+          headerSub: 'അടുക്കള & ആരോഗ്യകരമായ ഡയറ്റ് പ്ലാനർ',
+          navFridge: 'അടുക്കള',
+          navCombo: 'ഭക്ഷണം',
+          navPrepare: 'പാചകം',
+          navDiet: 'ഡയറ്റ്',
+          navGrocery: 'ലിസ്റ്റ്',
+          fridgeTitle: 'ഇന്ന് അടുക്കളയിൽ എന്തൊക്കെ സാധനങ്ങളുണ്ട്?',
+          fridgeSub: 'ഉള്ള സാധനങ്ങൾ തിരഞ്ഞെടുക്കുക അല്ലെങ്കിൽ നാടൻ പേരുകൾ + Add വഴി ചേർക്കുക.',
+          selectedSuffix: 'തിരഞ്ഞെടുത്തു',
+          clearBtn: 'ഒഴിവാക്കുക',
+          catGrains: 'ധാന്യങ്ങളും മാവും (അരി / ഗോതമ്പ് / മൈദ)',
+          catProtein: 'പ്രോട്ടീൻ (പരിപ്പ് / മുട്ട / ചിക്കൻ / മീൻ / പനീർ / തൈര്)',
+          catVeg: 'പച്ചക്കറികളും തേങ്ങയും',
+          genPlanBtn: 'ചേരുന്ന വിഭവങ്ങൾ കാണുക',
+          comboTitle: 'ചേരുന്ന ഭക്ഷണ വിഭവങ്ങൾ',
+          comboSub: 'ദോശ, ചപ്പാത്തി, കേരള പൊറോട്ട, കറികൾ എന്നിവ.',
+          editFridgeBtn: '+ മാറ്റുക',
+          breakfastLabel: 'പ്രഭാതഭക്ഷണം (Breakfast)',
+          lunchLabel: 'ഉച്ചഭക്ഷണം (Lunch)',
+          dinnerLabel: 'രാത്രിഭക്ഷണം (Dinner)',
+          viewRecipeBtn: 'പാചക രീതി കാണുക →',
+          emptySelectTitle: 'അടുക്കളയിൽ നിന്ന് സാധനങ്ങൾ തിരഞ്ഞെടുത്തിട്ടില്ല',
+          emptySelectBody: 'നിങ്ങൾക്ക് ചേർന്ന രുചികരമായ വിഭവങ്ങൾ കാണാൻ ദയവായി അടുക്കളയിൽ നിന്ന് ഏതെങ്കിലും സാധനങ്ങൾ തിരഞ്ഞെടുക്കൂ 😊',
+          emptySelectBtn: 'അടുക്കളയിലേക്ക് പോയി സാധനങ്ങൾ തിരഞ്ഞെടുക്കുക →',
+          noMatchTitle: 'ഒരു പ്രധാന ചേരുവ കൂടി തിരഞ്ഞെടുക്കൂ',
+          noMatchBody: 'പൂർണ്ണമായ വിഭവങ്ങൾ കാണാൻ അരി, ഗോതമ്പ്, മൈദ, പരിപ്പ്, ചിക്കൻ, മീൻ, അല്ലെങ്കിൽ മുട്ട കൂടി തിരഞ്ഞെടുക്കൂ 😊',
+          prepareTitle: 'പാചക രീതി (How to Prepare)',
+          prepareSub: 'തിരഞ്ഞെടുത്ത വിഭവങ്ങളുടെ കൃത്യമായ അളവുകളും പാചക ഘട്ടങ്ങളും.',
+          ingredientsHeading: 'ആവശ്യമുള്ള സാധനങ്ങൾ (2 പേർക്ക്)',
+          stepsHeading: 'പാചക ഘട്ടങ്ങൾ',
+          healthCondHeading: '🩺 ആരോഗ്യപ്രശ്നങ്ങളും ഭക്ഷണ നിർദ്ദേശങ്ങളും',
+          healthCondSub: 'നിങ്ങളുടെ ആരോഗ്യാവസ്ഥ തിരഞ്ഞെടുത്താൽ ഒഴിവാക്കേണ്ടതും കഴിക്കേണ്ടതുമായ ഭക്ഷണങ്ങൾ കാണാം.',
+          avoidLabel: '❌ ഒഴിവാക്കേണ്ട / കുറയ്ക്കേണ്ട ഭക്ഷണങ്ങൾ:',
+          includeLabel: '✅ കൂടുതലായി കഴിക്കേണ്ട ഭക്ഷണങ്ങൾ:',
+          dietTitle: 'ആരോഗ്യകരമായ ഇന്ത്യൻ ഡയറ്റ് ഗൈഡ്',
+          dietSub: 'രോഗാവസ്ഥയ്ക്കനുസരിച്ചുള്ള ഭക്ഷണ നിർദ്ദേശങ്ങളും BMI & കുടിവെള്ള കണക്കും.',
+          plateHeading: '🍽️ ഒരാൾക്കുള്ള കൃത്യമായ ഭക്ഷണ അളവ്',
+          zoneVeggiesTitle: '50% പച്ചക്കറികളും നാരുകളും',
+          zoneVeggiesDesc: '1–1.5 കപ്പ് കാബേജ്/ബീൻസ് തോരൻ, മെഴുക്കുപുരട്ടി, അല്ലെങ്കിൽ സാലഡ്',
+          zoneCarbsTitle: '25% ചോറ് അല്ലെങ്കിൽ ചപ്പാത്തി',
+          zoneCarbsDesc: '1–1.5 കപ്പ് ചോറ് അല്ലെങ്കിൽ 2–3 ചപ്പാത്തി',
+          zoneProteinTitle: '25% പ്രോട്ടീൻ',
+          zoneProteinDesc: '1 കപ്പ് പരിപ്പ് കറി, തൈര്, പനീർ, ചിക്കൻ, മീൻ, അല്ലെങ്കിൽ 2 പുഴുങ്ങിയ മുട്ട',
+          calcHeading: '📊 BMI, കലോറി & പ്രോട്ടീൻ കാൽക്കുലേറ്റർ',
+          weightLabel: 'ഭാരം (kg)',
+          heightLabel: 'ഉയരം (cm)',
+          goalLabel: 'നിങ്ങളുടെ ലക്ഷ്യം',
+          goalMaintain: 'ഭാരം നിലനിർത്തുക & ദിവസം മുഴുവൻ ഊർജ്ജം',
+          goalLoss: 'ആരോഗ്യകരമായ ഭാരം കുറയ്ക്കൽ (-350 kcal)',
+          goalMuscle: 'മസിൽ & കരുത്ത് വർദ്ധിപ്പിക്കൽ (+300 kcal)',
+          bmiNormal: 'കൃത്യമായ BMI',
+          bmiUnder: 'ഭാരം കുറവ്',
+          bmiOver: 'ഭാരം കൂടുതൽ',
+          calUnit: 'കലോറി / ദിവസം',
+          proUnit: 'പ്രോട്ടീൻ / ദിവസം',
+          waterHeading: '💧 കുടിവെള്ള കണക്ക് (8 ഗ്ലാസ് = 2.5 ലിറ്റർ)',
+          waterHint: 'ഓരോ ഗ്ലാസ് വെള്ളം കുടിക്കുമ്പോഴും താഴെ ടാപ്പ് ചെയ്യുക',
+          groceryTitle: 'പലചരക്ക് ലിസ്റ്റ്',
+          grocerySub: 'തീർന്നുപോയ സാധനങ്ങൾ ചേർത്ത് വാട്സാപ്പിൽ ഷെയർ ചെയ്യുക.',
+          itemsSuffix: 'സാധനങ്ങൾ',
+          groceryPlaceholder: 'ഉദാ: അരി, പരിപ്പ്, ചിക്കൻ, വെളിച്ചെണ്ണ...',
+          groceryAdd: '+ ചേർക്കുക',
+          shareWhatsapp: 'വാട്സാപ്പിൽ ലിസ്റ്റ് അയക്കുക',
+          emptyGrocery: 'ലിസ്റ്റിൽ സാധനങ്ങൾ ഒന്നുമില്ല. മുകളിൽ ചേർക്കുക!',
+          ftueSkipTurnOff: 'ഒഴിവാക്കുക & ഓഫ് ചെയ്യുക',
+          ftueDontShow: 'ഇനി ആപ്പ് തുറക്കുമ്പോൾ ഇത് കാണിക്കരുത്',
+          ftueBack: '← പിന്നിലേക്ക്',
+          ftueNext: 'അടുത്തത് →',
+          ftueFinish: 'തുടങ്ങാം ✓'
+        },
+        hi: {
+          ...BASE_EN,
+          headerSub: 'भारतीय भोजन और हेल्दी डाइट प्लानर',
+          navFridge: 'रसोई',
+          navCombo: 'भोजन',
+          navPrepare: 'विधि',
+          navDiet: 'डाइट',
+          navGrocery: 'लिस्ट',
+          fridgeTitle: 'आज आपकी रसोई में क्या-क्या है?',
+          genPlanBtn: 'मिलते-जुलते व्यंजन देखें',
+          emptySelectTitle: 'अभी तक कोई सामग्री नहीं चुनी गई है',
+          emptySelectBody: 'कृपया अपनी रसोई से उपलब्ध सामग्री चुनें ताकि हम आपके लिए सही व्यंजन दिखा सकें 😊',
+          emptySelectBtn: 'रसोई में जाएं और सामग्री चुनें →',
+          ftueSkipTurnOff: 'छोड़ें और बंद करें',
+          ftueDontShow: 'अगली बार ऐप खोलने पर न दिखाएं',
+          ftueFinish: 'शुरू करें ✓'
+        },
+        ta: { ...BASE_EN, navFridge: 'சமையலறை', navCombo: 'உணவு', navPrepare: 'செய்முறை', navDiet: 'டயட்', navGrocery: 'பட்டியல்' },
+        te: { ...BASE_EN, navFridge: 'వంటగది', navCombo: 'భోజనం', navPrepare: 'విధానం', navDiet: 'డైట్', navGrocery: 'జాబితా' },
+        kn: { ...BASE_EN, navFridge: 'ಅಡುಗೆಮನೆ', navCombo: 'ಆಹಾರ', navPrepare: 'ವಿಧಾನ', navDiet: 'ಡಯಟ್', navGrocery: 'ಪಟ್ಟಿ' },
+        bn: { ...BASE_EN, navFridge: 'রান্নাঘর', navCombo: 'খাবার', navPrepare: 'প্রণালী', navDiet: 'ডায়েট', navGrocery: 'তালিকা' },
+        mr: { ...BASE_EN, navFridge: 'स्वयंपाकघर', navCombo: 'जेवण', navPrepare: 'कृती', navDiet: 'डाएट', navGrocery: 'यादी' },
+        gu: { ...BASE_EN, navFridge: 'રસોડું', navCombo: 'ભોજન', navPrepare: 'રીત', navDiet: 'ડાયટ', navGrocery: 'યાદી' },
+        pa: { ...BASE_EN, navFridge: 'ਰਸੋਈ', navCombo: 'ਭੋਜਨ', navPrepare: 'ਵਿਧੀ', navDiet: 'ਡਾਈਟ', navGrocery: 'ਸੂਚੀ' },
+        or: { ...BASE_EN, navFridge: 'ରୋଷେଇଘର', navCombo: 'ଖାଦ୍ୟ', navPrepare: 'ପ୍ରଣାଳୀ', navDiet: 'ଡାଏଟ୍', navGrocery: 'ତାଲିକା' },
+        as: { ...BASE_EN, navFridge: 'পাকঘৰ', navCombo: 'খাদ্য', navPrepare: 'প্ৰণালী', navDiet: 'ডায়েট', navGrocery: 'তালিকা' }
+      };
+
+      let state = {
+        ftueDisabled: false,
+        lang: 'en',
+        region: 'all',
+        activeTab: 'fridge',
+        dietToggles: {
+          veg: true,
+          nonveg: true,
+          dairy: true
+        },
+        selectedIngredients: ['rice', 'atta', 'dal', 'beans', 'eggs'],
+        customItems: [],
+        selectedConditions: [],
+        customConditions: [],
+        waterGlasses: 2,
+        weight: 70,
+        height: 170,
+        goal: 'maintain',
+        groceries: [
+          { text: 'Sona Masoori / Parboiled Rice (5 kg)', done: false },
+          { text: 'Whole Wheat Atta (2 kg)', done: false },
+          { text: 'Toor Dal & Moong Dal', done: false },
+          { text: 'Beans, Carrot & Cabbage', done: false }
+        ]
+      };
+
+      try {
+        if (localStorage.getItem(KEYS.FTUE_DISABLED) === 'true') state.ftueDisabled = true;
+        const sLang = localStorage.getItem(KEYS.LANG);
+        if (sLang && TRANSLATIONS[sLang]) state.lang = sLang;
+        const sReg = localStorage.getItem(KEYS.REGION);
+        if (sReg && INDIAN_REGIONS.some((r) => r.id === sReg)) state.region = sReg;
+        const sSel = JSON.parse(localStorage.getItem(KEYS.SELECTED));
+        if (Array.isArray(sSel)) state.selectedIngredients = sSel;
+        const sCust = JSON.parse(localStorage.getItem(KEYS.CUSTOM_ITEMS));
+        if (Array.isArray(sCust)) state.customItems = sCust;
+        const sCond = JSON.parse(localStorage.getItem(KEYS.CONDITIONS));
+        if (Array.isArray(sCond)) state.selectedConditions = sCond;
+        const sCustCond = JSON.parse(localStorage.getItem(KEYS.CUSTOM_CONDITIONS));
+        if (Array.isArray(sCustCond)) state.customConditions = sCustCond;
+        const sDietToggles = JSON.parse(localStorage.getItem(KEYS.DIET_TOGGLES));
+        if (sDietToggles && typeof sDietToggles === 'object') {
+          state.dietToggles = {
+            veg: sDietToggles.veg !== false,
+            nonveg: sDietToggles.nonveg !== false,
+            dairy: sDietToggles.dairy !== false
+          };
+        }
+        const sWater = parseInt(localStorage.getItem(KEYS.WATER), 10);
+        if (!isNaN(sWater) && sWater >= 0 && sWater <= 8) state.waterGlasses = sWater;
+        const sGroc = JSON.parse(localStorage.getItem(KEYS.GROCERIES));
+        if (Array.isArray(sGroc)) state.groceries = sGroc;
+        const sDiet = JSON.parse(localStorage.getItem(KEYS.DIET));
+        if (sDiet && typeof sDiet === 'object') {
+          state.weight = sDiet.weight || 70;
+          state.height = sDiet.height || 170;
+          state.goal = sDiet.goal || 'maintain';
+        }
+      } catch (e) {}
+
+      function persist() {
+        try {
+          localStorage.setItem(KEYS.FTUE_DISABLED, state.ftueDisabled ? 'true' : 'false');
+          localStorage.setItem(KEYS.LANG, state.lang);
+          localStorage.setItem(KEYS.REGION, state.region);
+          localStorage.setItem(KEYS.SELECTED, JSON.stringify(state.selectedIngredients));
+          localStorage.setItem(KEYS.CUSTOM_ITEMS, JSON.stringify(state.customItems));
+          localStorage.setItem(KEYS.CONDITIONS, JSON.stringify(state.selectedConditions));
+          localStorage.setItem(KEYS.CUSTOM_CONDITIONS, JSON.stringify(state.customConditions));
+          localStorage.setItem(KEYS.DIET_TOGGLES, JSON.stringify(state.dietToggles));
+          localStorage.setItem(KEYS.WATER, String(state.waterGlasses));
+          localStorage.setItem(KEYS.GROCERIES, JSON.stringify(state.groceries));
+          localStorage.setItem(KEYS.DIET, JSON.stringify({ weight: state.weight, height: state.height, goal: state.goal }));
+        } catch (e) {}
+      }
+
+      function tObj() {
+        return TRANSLATIONS[state.lang] || TRANSLATIONS.en;
+      }
+
+      let snackbarTimer = null;
+      function showSnackbar(text, tone) {
+        const bar = document.getElementById('snackbar');
+        const txt = document.getElementById('snackbarText');
+        clearTimeout(snackbarTimer);
+        txt.textContent = text;
+        bar.className = 'mx-4 mt-3 rounded-2xl px-4 py-3 text-xs font-bold flex items-center justify-between gap-3 border shadow-sm';
+        if (tone === 'amber') {
+          bar.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-900');
+        } else if (tone === 'rose') {
+          bar.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800');
+        } else {
+          bar.classList.add('bg-teal-50', 'border-teal-300', 'text-teal-900');
+        }
+        bar.classList.remove('hidden');
+        snackbarTimer = setTimeout(() => bar.classList.add('hidden'), 4400);
+      }
+
+      // DESI / REGIONAL NAME CONVERTER HELPER
+      function resolveDesiProduct(rawInput, fallbackCategory) {
+        const cleaned = rawInput.trim().replace(/\s+/g, ' ');
+        const lower = cleaned.toLowerCase();
+
+        const matchedSyn = DESI_SYNONYMS_MAP.find((entry) =>
+          entry.aliases.some((alias) => lower === alias || lower.includes(alias))
+        );
+
+        if (matchedSyn) {
+          return {
+            converted: true,
+            targetId: matchedSyn.targetId,
+            desiLabel: cleaned,
+            canonicalName: matchedSyn.canonical,
+            category: matchedSyn.category,
+            icon: matchedSyn.icon,
+            dietType: matchedSyn.dietType,
+            isDairy: matchedSyn.isDairy
+          };
+        }
+
+        const isNonVegWord = /(mutton|beef|pork|crab|duck|quail|meat|kebab|biryani)/i.test(lower);
+        const isDairyWord = /(milk|ghee|butter|cheese|cream|lassi|khoya|mawa|paal|venna|neyyi)/i.test(lower);
+        const icons = { grains: '🌾', protein: isNonVegWord ? '🍗' : isDairyWord ? '🥛' : '🫘', veg: '🥗' };
+
+        return {
+          converted: false,
+          targetId: 'custom_' + Date.now(),
+          desiLabel: cleaned,
+          canonicalName: cleaned.replace(/\b\w/g, (ch) => ch.toUpperCase()),
+          category: fallbackCategory,
+          icon: icons[fallbackCategory] || '🥗',
+          dietType: isNonVegWord ? 'nonveg' : 'veg',
+          isDairy: isDairyWord
+        };
+      }
+
+      // HEALTH CONDITION VALIDATOR
+      const VALID_MEDICAL_CONDITIONS = [
+        { keys: ['pcos', 'pcod'], label: 'PCOS / PCOD', avoidEn: 'Refined Sugar, White Bread, Fried Snacks & Sugary Juices', avoidMl: 'പഞ്ചസാര, മൈദ, വറുത്ത പലഹാരങ്ങൾ, മധുരപാനീയങ്ങൾ', includeEn: 'Dal, Eggs, Paneer, Spinach, Oats & Cinnamon', includeMl: 'പരിപ്പ്, മുട്ട, പനീർ, ചീര, ഓട്സ്' },
+        { keys: ['fatty liver', 'liver'], label: 'Fatty Liver', avoidEn: 'Deep-fried Foods, Excess Oil/Ghee, Sweets & White Rice in excess', avoidMl: 'എണ്ണയിൽ വറുത്തവ, അമിതമായ നെയ്യ്, മധുരം, കൂടുതൽ വെള്ള അരി', includeEn: 'Moong Dal, Spinach, Beans, Oats, Curd & Turmeric', includeMl: 'ചെറുപയർ പരിപ്പ്, ചീര, ബീൻസ്, ഓട്സ്, തൈര്' },
+        { keys: ['anemia', 'anaemia', 'low iron', 'hemoglobin'], label: 'Anemia (Low Iron)', avoidEn: 'Tea or Coffee immediately after meals (blocks iron absorption)', avoidMl: 'ഭക്ഷണത്തിന് ഉടനെയുള്ള ചായയും കാപ്പിയും (അയൺ ആഗിരണം കുറയ്ക്കും)', includeEn: 'Spinach / Greens, Dal, Eggs, Beetroot & Lemon (Vitamin C)', includeMl: 'ചീര, പരിപ്പ്, മുട്ട, ബീറ്റ്റൂട്ട്, നാരങ്ങാനീര്' },
+        { keys: ['uric acid', 'gout'], label: 'High Uric Acid / Gout', avoidEn: 'Red Meat, Organ Meats, Sardines, Excess Spinach & Sugary Drinks', avoidMl: 'ചുവന്ന മാംസം, മത്തി, അമിതമായ ചീര, മധുരപാനീയങ്ങൾ', includeEn: 'Low-fat Curd, Cherries/Citrus, Rice, Wheat Atta & Plenty of Water', includeMl: 'കൊഴുപ്പ് കുറഞ്ഞ തൈര്, നാരങ്ങ, അരി, ഗോതമ്പ്, ധാരാളം വെള്ളം' },
+        { keys: ['kidney', 'renal', 'creatinine'], label: 'Kidney Care', avoidEn: 'Excess Salt, Pickles, Papad, Packaged Snacks & High-Potassium foods', avoidMl: 'അമിതമായ ഉപ്പ്, അച്ചാറുകൾ, പപ്പടം, ബേക്കറി പലഹാരങ്ങൾ', includeEn: 'Controlled portions of Rice, Cabbage, Bottle Gourd & Egg Whites', includeMl: 'മിതമായ അളവിൽ ചോറ്, കാബേജ്, മുട്ടയുടെ വെള്ള' },
+        { keys: ['migraine', 'headache'], label: 'Migraine', avoidEn: 'Skipping meals, Aged Cheese, Excess Caffeine & MSG/Packaged foods', avoidMl: 'ഭക്ഷണം ഒഴിവാക്കുന്നത്, അമിതമായ കാപ്പി, പാക്കറ്റ് ഭക്ഷണങ്ങൾ', includeEn: 'Regular balanced meals, Spinach, Oats, Curd & Steady Hydration', includeMl: 'കൃത്യസമയത്തുള്ള ഭക്ഷണം, ചീര, ഓട്സ്, തൈര്, വെള്ളം' },
+        { keys: ['ulcer', 'gastritis', 'gerd', 'reflux', 'constipation'], label: 'Gastritis / Constipation', avoidEn: 'Red Chili Powder, Spicy Pickles, Fried Foods & Late Dinners', avoidMl: 'അമിതമായ മുളകുപൊടി, എരിവുള്ള അച്ചാറുകൾ, എണ്ണയിൽ വറുത്തവ', includeEn: 'Curd / Buttermilk, Steamed Rice, Poha, Cabbage & Okra', includeMl: 'തൈര് / മോര്, ചോറ്, അവൽ, കാബേജ്, വെണ്ടയ്ക്ക' },
+        { keys: ['asthma', 'allergy', 'sinus', 'cold', 'cough', 'fever'], label: 'Respiratory / Fever Recovery', avoidEn: 'Chilled Drinks, Ice Cream & Heavy Oily Snacks', avoidMl: 'തണുത്ത പാനീയങ്ങൾ, ഐസ്ക്രീം, എണ്ണ പലഹാരങ്ങൾ', includeEn: 'Warm Moong Dal Soup, Pepper-Turmeric Broth, Eggs & Steamed Veggies', includeMl: 'ചൂടുള്ള ചെറുപയർ പരിപ്പ് സൂപ്പ്, കുരുമുളക്-മഞ്ഞൾ രസം, മുട്ട' },
+        { keys: ['heart', 'cardiac', 'hypertension'], label: 'Heart Health', avoidEn: 'Trans Fats, Deep-fried Snacks, Excess Salt & Full-fat Cream', avoidMl: 'എണ്ണയിൽ വറുത്ത പലഹാരങ്ങൾ, അമിതമായ ഉപ്പ്, കൊഴുപ്പ് കൂടിയ ഭക്ഷണം', includeEn: 'Oats, Beans, Okra, Moong Dal, Spinach & Garlic', includeMl: 'ഓട്സ്, ബീൻസ്, വെണ്ടയ്ക്ക, ചെറുപയർ പരിപ്പ്, ചീര' },
+        { keys: ['obesity', 'overweight', 'weight loss'], label: 'Weight Management', avoidEn: 'Sugary Sweets, Maida, Fried Snacks & Large Rice portions', avoidMl: 'മധുരപലഹാരങ്ങൾ, മൈദ, വറുത്തവ, അമിതമായ ചോറ്', includeEn: '50% Veggies (Cabbage/Beans), Dal, Eggs, Paneer & Buttermilk', includeMl: '50% പച്ചക്കറികൾ, പരിപ്പ്, മുട്ട, പനീർ, മോര്' }
+      ];
+
+      function validateHealthConditionInput(rawInput) {
+        const useMl = state.lang === 'ml';
+        const cleaned = rawInput.trim().replace(/\s+/g, ' ');
+        const lower = cleaned.toLowerCase();
+
+        const blockedWords = [
+          'dead', 'death', 'die', 'dying', 'zombie', 'ghost', 'murder', 'kill',
+          'test', 'testing', 'abc', 'abcd', 'xyz', 'qwerty', 'asdf', 'zxcv',
+          'hello', 'hi', 'hey', 'lol', 'haha', 'ok', 'yes', 'no', 'none', 'nothing',
+          'idk', 'random', 'blah', 'foo', 'bar', 'dummy', 'fake', 'nil', 'null',
+          'nan', 'undefined', 'chair', 'table', 'car', 'bike', 'phone', 'stone', 'wall'
+        ];
+
+        if (cleaned.length < 3 || cleaned.length > 40) {
+          return {
+            valid: false,
+            error: useMl
+              ? '⚠️ ദയവായി ശരിയായ ഒരു ആരോഗ്യപ്രശ്നം നൽകുക (ഉദാ: PCOS, Fatty Liver, Anemia).'
+              : '⚠️ Please enter a valid health condition (e.g., PCOS, Fatty Liver, Anemia).'
+          };
+        }
+
+        if (!/[a-zA-Z\u0900-\u0D7F]/.test(cleaned) || /[0-9@#$%^&*=+<>~`]/.test(cleaned)) {
+          return {
+            valid: false,
+            error: useMl
+              ? '⚠️ അക്കങ്ങളോ ചിഹ്നങ്ങളോ പാടില്ല. ശരിയായ രോഗാവസ്ഥയുടെ പേര് നൽകുക (ഉദാ: PCOS, Anemia).'
+              : '⚠️ Numbers or symbols are not allowed. Enter a real health condition (e.g., PCOS, Anemia).'
+          };
+        }
+
+        if (blockedWords.includes(lower)) {
+          return {
+            valid: false,
+            error: useMl
+              ? `⚠️ "${cleaned}" എന്നത് ഒരു ആരോഗ്യപ്രശ്നമല്ല. ദയവായി ശരിയായ രോഗാവസ്ഥ നൽകുക (ഉദാ: PCOS, Fatty Liver, Anemia).`
+              : `⚠️ "${cleaned}" is not a valid medical condition. Please enter a real health condition (e.g., PCOS, Fatty Liver, Anemia).`
+          };
+        }
+
+        if (/(.)\1{2,}/i.test(lower)) {
+          return {
+            valid: false,
+            error: useMl
+              ? '⚠️ അക്ഷരത്തെറ്റുണ്ട്. ദയവായി ശരിയായ ആരോഗ്യപ്രശ്നം നൽകുക (ഉദാ: Fatty Liver, Uric Acid).'
+              : '⚠️ That looks like a random word. Please enter a valid health condition (e.g., Fatty Liver, Uric Acid).'
+          };
+        }
+
+        if (/^[a-zA-Z\s]+$/.test(lower)) {
+          const words = lower.split(' ');
+          const hasGibberishWord = words.some((w) => {
+            if (w.length >= 4 && !/[aeiouy]/i.test(w)) return true;
+            if (/[bcdfghjklmnpqrstvwxz]{5,}/i.test(w)) return true;
+            return false;
+          });
+          if (hasGibberishWord) {
+            return {
+              valid: false,
+              error: useMl
+                ? `⚠️ "${cleaned}" വ്യക്തമല്ല. ദയവായി ശരിയായ രോഗാവസ്ഥ നൽകുക (ഉദാ: PCOS, Anemia, Uric Acid).`
+                : `⚠️ "${cleaned}" doesn't look like a valid health condition. Try PCOS, Anemia, or Uric Acid.`
+            };
+          }
+        }
+
+        const alreadyBuiltIn = HEALTH_CONDITIONS_DB.some(
+          (c) => c.en.toLowerCase().includes(lower) || c.id === lower
+        );
+        const alreadyCustom = state.customConditions.some(
+          (c) => c.toLowerCase() === lower
+        );
+        if (alreadyBuiltIn || alreadyCustom) {
+          return {
+            valid: false,
+            error: useMl
+              ? `ℹ️ "${cleaned}" ഇതിനകം ലിസ്റ്റിൽ ചേർത്തിട്ടുണ്ട്.`
+              : `ℹ️ "${cleaned}" is already added to your health list.`
+          };
+        }
+
+        const matchedMed = VALID_MEDICAL_CONDITIONS.find((m) =>
+          m.keys.some((k) => lower.includes(k))
+        );
+
+        return {
+          valid: true,
+          normalizedName: matchedMed ? matchedMed.label : cleaned.replace(/\b\w/g, (ch) => ch.toUpperCase())
+        };
+      }
+
+      function switchTab(tabId) {
+        state.activeTab = tabId;
+        document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+        const target = document.getElementById('panel-' + tabId);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('.nav-tab').forEach((btn) => {
+          const active = btn.getAttribute('data-tab') === tabId;
+          const pill = btn.querySelector('.nav-pill');
+          if (active) {
+            btn.className = 'nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-teal-800';
+            pill.className = 'nav-pill px-3 py-1 rounded-full bg-teal-100 border border-teal-300 text-xl leading-none';
+          } else {
+            btn.className = 'nav-tab pressable flex flex-col items-center justify-center gap-1.5 py-1.5 rounded-2xl text-stone-500';
+            pill.className = 'nav-pill px-3 py-1 rounded-full text-xl leading-none';
+          }
+        });
+
+        if (tabId === 'combo') {
+          renderDietTogglesUI();
+          renderRegionBars();
+          renderCombos();
+        } else if (tabId === 'prepare') {
+          renderRegionBars();
+          renderPrepareCards();
+        } else if (tabId === 'diet') {
+          renderHealthConditions();
+        }
+      }
+      window.switchTab = switchTab;
+
+      // FTUE ONBOARDING MODAL
+      let ftueStep = 0;
+
+      function openFtue(step) {
+        ftueStep = step || 0;
+        document.getElementById('ftueDontShowAgainChk').checked = true;
+        renderFtueStep();
+        document.getElementById('ftueModal').classList.remove('hidden');
+      }
+
+      function closeFtue(forceDisable) {
+        const chk = document.getElementById('ftueDontShowAgainChk').checked;
+        if (forceDisable || chk) {
+          state.ftueDisabled = true;
+        }
+        persist();
+        document.getElementById('ftueModal').classList.add('hidden');
+      }
+
+      function renderFtueStep() {
+        const t = tObj();
+        const useMl = state.lang === 'ml';
+
+        const dots = document.getElementById('ftueDotsContainer');
+        dots.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = i === ftueStep
+            ? 'h-2 w-7 rounded-full bg-teal-600 transition-all'
+            : i < ftueStep
+            ? 'h-2 w-2 rounded-full bg-teal-400 transition-all'
+            : 'h-2 w-2 rounded-full bg-stone-200 transition-all';
+          b.onclick = () => { ftueStep = i; renderFtueStep(); };
+          dots.appendChild(b);
+        }
+
+        document.getElementById('ftueSkipTurnOffBtn').textContent = t.ftueSkipTurnOff;
+        document.getElementById('ftueDontShowLabel').textContent = t.ftueDontShow;
+        const backBtn = document.getElementById('ftueBackBtn');
+        const nextBtn = document.getElementById('ftueNextBtn');
+        backBtn.textContent = t.ftueBack;
+        backBtn.style.visibility = ftueStep === 0 ? 'hidden' : 'visible';
+        nextBtn.textContent = ftueStep === 4 ? t.ftueFinish : t.ftueNext;
+
+        const area = document.getElementById('ftueContentArea');
+        if (ftueStep === 0) {
+          area.innerHTML = `
+            <div class="text-center space-y-1.5">
+              <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-600 flex items-center justify-center text-2xl shadow-md text-white">🍲</div>
+              <h2 class="text-lg font-extrabold text-stone-900">${useMl ? 'MealPrep-ലേക്ക് സ്വാഗതം!' : 'Welcome to MealPrep!'}</h2>
+              <p class="text-xs text-stone-600">${useMl ? 'നിങ്ങളുടെ ഭാഷയും പ്രദേശവും തിരഞ്ഞെടുക്കാം.' : 'Choose your Indian language and regional food style below.'}</p>
+            </div>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-teal-800">${useMl ? '12 ഇന്ത്യൻ ഭാഷകൾ' : '12 Indian Languages'}</div>
+              <div class="grid grid-cols-3 gap-1.5">
+                ${INDIAN_LANGUAGES.map((l) => `
+                  <button type="button" data-ftue-lang="${l.code}" class="pressable py-1.5 px-2 rounded-xl text-xs font-extrabold border transition ${
+                    state.lang === l.code ? 'bg-teal-600 border-teal-600 text-white' : 'bg-stone-50 border-stone-200 text-stone-700'
+                  }">${l.label}</button>
+                `).join('')}
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-orange-700">${useMl ? 'പ്രദേശം തിരഞ്ഞെടുക്കുക' : 'Regional Food Style'}</div>
+              <div class="flex flex-wrap gap-1.5">
+                ${INDIAN_REGIONS.map((r) => `
+                  <button type="button" data-ftue-reg="${r.id}" class="pressable px-2.5 py-1.5 rounded-xl text-xs font-extrabold border transition ${
+                    state.region === r.id ? 'bg-amber-500 border-amber-500 text-white' : 'bg-stone-50 border-stone-200 text-stone-700'
+                  }">${r.icon} ${useMl ? r.ml : r.en}</button>
+                `).join('')}
+              </div>
+            </div>
+          `;
+          area.querySelectorAll('[data-ftue-lang]').forEach((b) => {
+            b.addEventListener('click', () => {
+              state.lang = b.getAttribute('data-ftue-lang');
+              persist();
+              applyLanguage();
+              renderFtueStep();
+            });
+          });
+          area.querySelectorAll('[data-ftue-reg]').forEach((b) => {
+            b.addEventListener('click', () => {
+              state.region = b.getAttribute('data-ftue-reg');
+              persist();
+              renderRegionBars();
+              renderCombos();
+              renderPrepareCards();
+              renderFtueStep();
+            });
+          });
+        } else if (ftueStep === 1) {
+          area.innerHTML = `
+            <div class="space-y-2.5">
+              <span class="px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-xs font-extrabold">🧊 Step 2 of 5</span>
+              <h2 class="text-lg font-extrabold text-stone-900">${useMl ? 'Veg / Non-Veg / Dairy & നാടൻ പേരുകൾ' : 'Veg / Non-Veg / Dairy & Desi Names'}</h2>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                ${useMl
+                  ? 'Veg, Non-Veg, Dairy ബട്ടണുകൾ ഉപയോഗിച്ച് ഫിൽട്ടർ ചെയ്യാം. "+ Add" വഴി Ari, Murgh, Meen, Dahi തുടങ്ങിയ നാടൻ പേരുകൾ നൽകിയാൽ ആപ്പ് അത് തനിയെ തിരിച്ചറിയും!'
+                  : 'Use the Veg, Non-Veg & Dairy toggles to filter, or type Desi names (Ari, Murgh, Meen, Dahi, Aloo) in "+ Add" to auto-convert and apply everywhere.'}
+              </p>
+            </div>
+          `;
+        } else if (ftueStep === 2) {
+          area.innerHTML = `
+            <div class="space-y-2.5">
+              <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-extrabold">🍛 Step 3 of 5</span>
+              <h2 class="text-lg font-extrabold text-stone-900">${useMl ? 'ദോശ, ചപ്പാത്തി, കേരള പൊറോട്ട & കറികൾ' : 'Dosa, Chapati, Kerala Porotta & Curries'}</h2>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                ${useMl
+                  ? 'നിങ്ങൾ തിരഞ്ഞെടുത്ത സാധനങ്ങൾ കൊണ്ട് ഉണ്ടാക്കാവുന്ന ദോശ, ഇഡ്ഡലി, ചപ്പാത്തി, കേരള പൊറോട്ട, ചിക്കൻ/മീൻ കറികൾ എന്നിവ കാണാം.'
+                  : 'See Dosa, Idli, Puttu, Chapati, Kerala Porotta, Chicken & Fish curries matched strictly to your kitchen stock.'}
+              </p>
+            </div>
+          `;
+        } else if (ftueStep === 3) {
+          area.innerHTML = `
+            <div class="space-y-2.5">
+              <span class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold">🩺 Step 4 of 5</span>
+              <h2 class="text-lg font-extrabold text-stone-900">${useMl ? 'ആരോഗ്യപ്രശ്നങ്ങൾക്കനുസരിച്ചുള്ള ഡയറ്റ്' : 'Disease & Health Condition Food Advisor'}</h2>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                ${useMl
+                  ? 'പ്രമേഹം (Diabetes), BP, കൊളസ്ട്രോൾ എന്നിവ തിരഞ്ഞെടുത്താൽ ഒഴിവാക്കേണ്ടതും കഴിക്കേണ്ടതുമായ ഭക്ഷണങ്ങൾ ആപ്പ് നിർദ്ദേശിക്കും.'
+                  : 'Select Diabetes, High BP, Cholesterol, Acidity, or Thyroid in the Diet tab to see foods to avoid and foods to include.'}
+              </p>
+            </div>
+          `;
+        } else {
+          area.innerHTML = `
+            <div class="space-y-2.5">
+              <span class="px-3 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-800 text-xs font-extrabold">🛒 Step 5 of 5</span>
+              <h2 class="text-lg font-extrabold text-stone-900">${useMl ? 'സ്മാർട്ട് പലചരക്ക് ലിസ്റ്റ്' : 'Smart WhatsApp Grocery List'}</h2>
+              <p class="text-xs sm:text-sm text-stone-600 leading-relaxed">
+                ${useMl
+                  ? 'തീർന്നുപോയ സാധനങ്ങൾ ലിസ്റ്റിൽ ചേർത്ത് വാട്സാപ്പ് വഴി ഒറ്റ ക്ലിക്കിൽ ഷെയർ ചെയ്യാം.'
+                  : 'Track weekly groceries and share your checklist on WhatsApp in one tap.'}
+              </p>
+            </div>
+          `;
+        }
+      }
+
+      // DIETARY PREFERENCE TOGGLE LOGIC (VEG / NON-VEG / DAIRY)
+      function isIngredientAllowedByDietToggle(item) {
+        const dt = item.dietType || 'veg';
+        const dairy = Boolean(item.isDairy);
+        if (dt === 'veg' && !state.dietToggles.veg) return false;
+        if (dt === 'nonveg' && !state.dietToggles.nonveg) return false;
+        if (dairy && !state.dietToggles.dairy) return false;
+        return true;
+      }
+
+      function isDishAllowedByDietToggle(dish) {
+        if (dish.dietType === 'veg' && !state.dietToggles.veg) return false;
+        if (dish.dietType === 'nonveg' && !state.dietToggles.nonveg) return false;
+        if (dish.hasDairy && !state.dietToggles.dairy) return false;
+        return true;
+      }
+
+      function renderDietTogglesUI() {
+        const useMl = state.lang === 'ml';
+        const vegBtn = document.getElementById('toggleVegBtn');
+        const nonVegBtn = document.getElementById('toggleNonVegBtn');
+        const dairyBtn = document.getElementById('toggleDairyBtn');
+
+        if (vegBtn) {
+          vegBtn.className = state.dietToggles.veg
+            ? 'pressable py-2 px-2.5 rounded-xl bg-emerald-600 border border-emerald-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs'
+            : 'pressable py-2 px-2.5 rounded-xl bg-stone-100 border border-stone-200 text-stone-400 text-xs font-bold flex items-center justify-center gap-1.5';
+        }
+        if (nonVegBtn) {
+          nonVegBtn.className = state.dietToggles.nonveg
+            ? 'pressable py-2 px-2.5 rounded-xl bg-rose-600 border border-rose-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs'
+            : 'pressable py-2 px-2.5 rounded-xl bg-stone-100 border border-stone-200 text-stone-400 text-xs font-bold flex items-center justify-center gap-1.5';
+        }
+        if (dairyBtn) {
+          dairyBtn.className = state.dietToggles.dairy
+            ? 'pressable py-2 px-2.5 rounded-xl bg-sky-600 border border-sky-700 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-xs'
+            : 'pressable py-2 px-2.5 rounded-xl bg-stone-100 border border-stone-200 text-stone-400 text-xs font-bold flex items-center justify-center gap-1.5';
+        }
+
+        const activeLabels = [];
+        if (state.dietToggles.veg) activeLabels.push('Veg');
+        if (state.dietToggles.nonveg) activeLabels.push('Non-Veg');
+        if (state.dietToggles.dairy) activeLabels.push('Dairy');
+        const badge = document.getElementById('dietToggleBadge');
+        if (badge) {
+          badge.textContent = activeLabels.length === 3
+            ? (useMl ? 'എല്ലാം (All)' : 'All Active')
+            : activeLabels.join(' + ');
+        }
+
+        const strip = document.getElementById('mealsDietFilterStrip');
+        if (strip) {
+          strip.innerHTML = `
+            <button type="button" data-meal-diet="veg" class="pressable shrink-0 px-3 py-1 rounded-full text-[11px] font-extrabold border ${
+              state.dietToggles.veg ? 'bg-emerald-600 border-emerald-700 text-white' : 'bg-white border-stone-200 text-stone-400'
+            }">🟢 Veg ${state.dietToggles.veg ? '✓' : ''}</button>
+            <button type="button" data-meal-diet="nonveg" class="pressable shrink-0 px-3 py-1 rounded-full text-[11px] font-extrabold border ${
+              state.dietToggles.nonveg ? 'bg-rose-600 border-rose-700 text-white' : 'bg-white border-stone-200 text-stone-400'
+            }">🍗 Non-Veg ${state.dietToggles.nonveg ? '✓' : ''}</button>
+            <button type="button" data-meal-diet="dairy" class="pressable shrink-0 px-3 py-1 rounded-full text-[11px] font-extrabold border ${
+              state.dietToggles.dairy ? 'bg-sky-600 border-sky-700 text-white' : 'bg-white border-stone-200 text-stone-400'
+            }">🥛 Dairy ${state.dietToggles.dairy ? '✓' : ''}</button>
+          `;
+          strip.querySelectorAll('[data-meal-diet]').forEach((b) => {
+            b.addEventListener('click', () => {
+              toggleDietaryFilter(b.getAttribute('data-meal-diet'));
+            });
+          });
+        }
+      }
+
+      function toggleDietaryFilter(key) {
+        const nextVal = !state.dietToggles[key];
+        const nextVeg = key === 'veg' ? nextVal : state.dietToggles.veg;
+        const nextNonVeg = key === 'nonveg' ? nextVal : state.dietToggles.nonveg;
+        if (!nextVeg && !nextNonVeg) {
+          showSnackbar(
+            state.lang === 'ml'
+              ? '⚠️ Veg അല്ലെങ്കിൽ Non-Veg ഏതെങ്കിലും ഒന്ന് ഓൺ ആയിരിക്കണം.'
+              : '⚠️ Keep at least Veg or Non-Veg enabled.',
+            'amber'
+          );
+          return;
+        }
+        state.dietToggles[key] = nextVal;
+        persist();
+        renderDietTogglesUI();
+        renderFridgeChips();
+        renderCombos();
+        renderPrepareCards();
+      }
+
+      // KITCHEN INGREDIENTS RENDERING
+      function renderFridgeChips() {
+        const t = tObj();
+        document.getElementById('selectedCounterBadge').textContent = `${state.selectedIngredients.length} ${t.selectedSuffix}`;
+
+        const activeStyles = {
+          grains: 'pressable inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-600 border border-teal-700 text-white text-xs font-extrabold shadow-xs',
+          protein: 'pressable inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-rose-600 border border-rose-700 text-white text-xs font-extrabold shadow-xs',
+          veg: 'pressable inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-violet-600 border border-violet-700 text-white text-xs font-extrabold shadow-xs'
+        };
+
+        ['grains', 'protein', 'veg'].forEach((cat) => {
+          const container = document.getElementById('chips-' + cat);
+          container.innerHTML = '';
+
+          BUILTIN_INGREDIENTS[cat].filter(isIngredientAllowedByDietToggle).forEach((item) => {
+            const isSel = state.selectedIngredients.includes(item.id);
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = isSel
+              ? activeStyles[cat]
+              : 'pressable inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-stone-50 border border-stone-200 text-stone-800 text-xs font-semibold shadow-2xs';
+
+            const name = item.names[state.lang] || item.names.en;
+            const desiAliasBadge = item.desiAlias ? ` <span class="text-[10px] opacity-80">(${item.desiAlias})</span>` : '';
+            btn.innerHTML = `<span>${item.icon}</span><span>${name}${desiAliasBadge}</span><span class="text-[11px] opacity-80">${isSel ? '✓' : '+'}</span>`;
+            btn.addEventListener('click', () => {
+              if (state.selectedIngredients.includes(item.id)) {
+                state.selectedIngredients = state.selectedIngredients.filter((x) => x !== item.id);
+              } else {
+                state.selectedIngredients.push(item.id);
+              }
+              persist();
+              renderFridgeChips();
+            });
+            container.appendChild(btn);
+          });
+
+          state.customItems
+            .filter((c) => c.category === cat && isIngredientAllowedByDietToggle(c))
+            .forEach((cItem) => {
+              const isSel = state.selectedIngredients.includes(cItem.id);
+              const wrap = document.createElement('div');
+              wrap.className = isSel
+                ? 'inline-flex items-center rounded-xl bg-amber-500 border border-amber-600 text-white text-xs font-extrabold overflow-hidden shadow-xs'
+                : 'inline-flex items-center rounded-xl bg-white border border-stone-200 text-stone-800 text-xs font-semibold overflow-hidden';
+
+              wrap.innerHTML = `
+                <button type="button" class="pressable inline-flex items-center gap-1.5 pl-3 pr-2 py-2">
+                  <span>${cItem.icon}</span><span>${cItem.name}</span><span>${isSel ? '✓' : '+'}</span>
+                </button>
+                <button type="button" class="px-2 py-2 text-[11px] opacity-75 hover:opacity-100 border-l border-black/10">✕</button>
+              `;
+              const btns = wrap.querySelectorAll('button');
+              btns[0].addEventListener('click', () => {
+                if (state.selectedIngredients.includes(cItem.id)) {
+                  state.selectedIngredients = state.selectedIngredients.filter((x) => x !== cItem.id);
+                } else {
+                  state.selectedIngredients.push(cItem.id);
+                }
+                persist();
+                renderFridgeChips();
+              });
+              btns[1].addEventListener('click', () => {
+                state.customItems = state.customItems.filter((x) => x.id !== cItem.id);
+                state.selectedIngredients = state.selectedIngredients.filter((x) => x !== cItem.id);
+                persist();
+                renderFridgeChips();
+              });
+              container.appendChild(wrap);
+            });
+        });
+
+        updateKitchenHealthAdvisory();
+      }
+
+      function updateKitchenHealthAdvisory() {
+        const box = document.getElementById('kitchenHealthAlertBox');
+        const body = document.getElementById('kitchenHealthAlertBody');
+        const useMl = state.lang === 'ml';
+
+        if (state.selectedConditions.length === 0) {
+          box.classList.add('hidden');
+          return;
+        }
+
+        const warnings = [];
+        state.selectedConditions.forEach((cid) => {
+          const cond = HEALTH_CONDITIONS_DB.find((c) => c.id === cid);
+          if (!cond) return;
+          const flagged = cond.avoidIds.filter((id) => state.selectedIngredients.includes(id));
+          if (flagged.length > 0) {
+            const names = flagged.map((fid) => {
+              const all = [...BUILTIN_INGREDIENTS.grains, ...BUILTIN_INGREDIENTS.protein, ...BUILTIN_INGREDIENTS.veg];
+              const found = all.find((x) => x.id === fid);
+              return found ? (found.names[state.lang] || found.names.en) : fid;
+            }).join(', ');
+            warnings.push(
+              useMl
+                ? `${cond.ml}: ${names} അളവ് കുറയ്ക്കാൻ ശ്രദ്ധിക്കുക.`
+                : `${cond.en}: Keep portions of ${names} controlled.`
+            );
+          }
+        });
+
+        if (warnings.length > 0) {
+          body.textContent = warnings.join(' ');
+          box.classList.remove('hidden');
+        } else {
+          box.classList.add('hidden');
+        }
+      }
+
+      // STRICT SUBSET MATCHING FOR MEALS & PREPARE
+      function renderRegionBars() {
+        const useMl = state.lang === 'ml';
+        ['comboRegionBar', 'prepareRegionBar'].forEach((barId) => {
+          const bar = document.getElementById(barId);
+          if (!bar) return;
+          bar.innerHTML = '';
+          INDIAN_REGIONS.forEach((reg) => {
+            const isSel = state.region === reg.id;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = isSel
+              ? 'pressable shrink-0 px-3.5 py-1.5 rounded-full bg-teal-700 text-white text-xs font-extrabold shadow-xs'
+              : 'pressable shrink-0 px-3.5 py-1.5 rounded-full bg-white hover:bg-teal-50 border border-teal-200 text-stone-700 text-xs font-bold';
+            btn.textContent = `${reg.icon} ${useMl ? reg.ml : reg.en}`;
+            btn.addEventListener('click', () => {
+              state.region = reg.id;
+              persist();
+              renderRegionBars();
+              renderCombos();
+              renderPrepareCards();
+            });
+            bar.appendChild(btn);
+          });
+        });
+      }
+
+      function getStrictlyMatchedDishes() {
+        if (state.selectedIngredients.length === 0) return [];
+        const selectedSet = new Set(state.selectedIngredients);
+
+        return DISH_CATALOG
+          .filter((dish) => {
+            const regionOk = state.region === 'all' || dish.region === state.region || dish.region === 'all';
+            const dietOk = isDishAllowedByDietToggle(dish);
+            const canMake = dish.req.every((reqId) => selectedSet.has(reqId));
+            return regionOk && dietOk && canMake;
+          })
+          .sort((a, b) => b.req.length - a.req.length);
+      }
+
+      function buildFriendlyEmptyCard(isZeroSelected) {
+        const t = tObj();
+        const div = document.createElement('div');
+        div.className = 'culinary-card rounded-3xl p-6 text-center space-y-3';
+        div.innerHTML = `
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-3xl">
+            ${isZeroSelected ? '🧺' : '🥗'}
+          </div>
+          <h3 class="text-base font-extrabold text-stone-900">
+            ${isZeroSelected ? t.emptySelectTitle : t.noMatchTitle}
+          </h3>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed max-w-sm mx-auto">
+            ${isZeroSelected ? t.emptySelectBody : t.noMatchBody}
+          </p>
+          <button
+            type="button"
+            onclick="switchTab('fridge')"
+            class="pressable inline-flex items-center justify-center px-5 py-3 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-extrabold text-xs sm:text-sm shadow-md"
+          >
+            ${t.emptySelectBtn}
+          </button>
+        `;
+        return div;
+      }
+
+      function getRecipeArtworkSvg(recipe) {
+        const themes = {
+          masala_dosa_idli: { bg1: '#D97706', bg2: '#059669', emoji: '🥞', sub: 'Crispy Dosa, Idli & Sambar' },
+          kerala_porotta_chicken: { bg1: '#B91C1C', bg2: '#D97706', emoji: '🫓', sub: 'Kerala Porotta & Chicken Roast' },
+          kerala_porotta_veg_kurma: { bg1: '#B45309', bg2: '#0D9488', emoji: '🫓', sub: 'Kerala Porotta & Potato Kurma' },
+          kerala_fish_curry_rice: { bg1: '#991B1B', bg2: '#0F766E', emoji: '🐟', sub: 'Malabar / Kudampuli Fish Curry' },
+          appam_puttu_coconut: { bg1: '#047857', bg2: '#0284C7', emoji: '🥥', sub: 'Kerala Puttu, Appam & Coconut' },
+          chapati_chicken_curry: { bg1: '#C2410C', bg2: '#991B1B', emoji: '🍗', sub: 'Whole Wheat Chapati & Chicken' },
+          chapati_dal_sabzi: { bg1: '#B45309', bg2: '#059669', emoji: '🫓', sub: 'Soft Phulka & Dal Tadka' },
+          rava_upma_poha: { bg1: '#0D9488', bg2: '#F59E0B', emoji: '🥣', sub: 'Mustard & Curry Leaf Upma / Poha' },
+          eggs_only_omelette: { bg1: '#F59E0B', bg2: '#EA580C', emoji: '🍳', sub: 'Golden Omelette & Boiled Eggs' },
+          paneer_only_tikka: { bg1: '#EA580C', bg2: '#DC2626', emoji: '🧀', sub: 'Charred Tawa Paneer' },
+          kerala_dal_thoran: { bg1: '#047857', bg2: '#0D9488', emoji: '🥥', sub: 'Kerala Parippu & Thoran Meal' },
+          curd_rice_combo: { bg1: '#0284C7', bg2: '#0D9488', emoji: '🥛', sub: 'Chilled Tempered Curd Rice' },
+          rice_only_jeera: { bg1: '#0F766E', bg2: '#0284C7', emoji: '🍚', sub: 'Aromatic Jeera & Steamed Rice' },
+          atta_only_roti: { bg1: '#B45309', bg2: '#EA580C', emoji: '🫓', sub: 'Soft Puffed Phulka Rotis' }
+        };
+        const t = themes[recipe.id] || { bg1: '#0F766E', bg2: '#D97706', emoji: '🍛', sub: 'Fresh Homestyle Meal' };
+        return `
+          <div class="relative overflow-hidden rounded-2xl p-3 text-white flex items-center justify-between gap-3" style="background: linear-gradient(125deg, ${t.bg1}, ${t.bg2});">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-2xl shrink-0 shadow-xs">
+                ${t.emoji}
+              </div>
+              <div class="min-w-0">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-white/85">${t.sub}</div>
+                <div class="text-xs font-extrabold text-white truncate">${recipe.cookMins} mins prep</div>
+              </div>
+            </div>
+            <svg viewBox="0 0 64 44" class="w-16 h-11 shrink-0 opacity-90">
+              <ellipse cx="32" cy="26" rx="26" ry="13" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2" />
+              <ellipse cx="32" cy="24" rx="20" ry="9" fill="#FFFFFF" />
+              <circle cx="26" cy="23" r="4" fill="#F97316" />
+              <circle cx="37" cy="24" r="3.5" fill="#10B981" />
+              <path d="M29 14 Q32 8 35 14" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M36 15 Q39 9 42 15" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+          </div>
+        `;
+      }
+
+      function renderCombos() {
+        const t = tObj();
+        const useMl = state.lang === 'ml';
+        const container = document.getElementById('comboCardsContainer');
+        container.innerHTML = '';
+
+        if (state.selectedIngredients.length === 0) {
+          container.appendChild(buildFriendlyEmptyCard(true));
+          return;
+        }
+
+        const matched = getStrictlyMatchedDishes();
+        const selectedCustom = state.customItems.filter(
+          (c) => state.selectedIngredients.includes(c.id) && isIngredientAllowedByDietToggle(c)
+        );
+
+        if (matched.length === 0 && selectedCustom.length === 0) {
+          container.appendChild(buildFriendlyEmptyCard(false));
+          return;
+        }
+
+        if (selectedCustom.length > 0) {
+          const names = selectedCustom.map((c) => c.name).join(', ');
+          const cCard = document.createElement('article');
+          cCard.className = 'culinary-card border-2 border-amber-400 rounded-3xl p-4 space-y-3';
+          cCard.innerHTML = `
+            <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold">
+              ✨ ${useMl ? 'നിങ്ങൾ ചേർത്ത സാധനങ്ങൾ' : 'Your Added Desi Items'}
+            </span>
+            <h3 class="text-sm sm:text-base font-extrabold text-stone-900">${names}</h3>
+            <div class="grid grid-cols-1 gap-2 text-xs">
+              <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3">
+                <strong class="text-amber-800 uppercase text-[10px]">☀️ ${t.breakfastLabel}</strong>
+                <p class="text-stone-700 mt-0.5">${useMl ? `${names} ചേർത്ത ലഘുവായ പ്രഭാതഭക്ഷണം.` : `Quick pan-tossed ${names} breakfast dish.`}</p>
+              </div>
+              <div class="rounded-2xl bg-teal-50 border border-teal-200 p-3">
+                <strong class="text-teal-800 uppercase text-[10px]">🌤️ ${t.lunchLabel} / 🌙 ${t.dinnerLabel}</strong>
+                <p class="text-stone-700 mt-0.5">${useMl ? `${names} ഉപയോഗിച്ചുള്ള കറി അല്ലെങ്കിൽ തോരൻ.` : `Homestyle ${names} masala curry or stir-fry.`}</p>
+              </div>
+            </div>
+          `;
+          container.appendChild(cCard);
+        }
+
+        matched.forEach((recipe) => {
+          const card = document.createElement('article');
+          card.className = 'culinary-card rounded-3xl p-4 space-y-3';
+          const dietBadge = recipe.dietType === 'nonveg'
+            ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-extrabold">🍗 Non-Veg</span>'
+            : '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">🟢 Pure Veg</span>';
+
+          card.innerHTML = `
+            ${getRecipeArtworkSvg(recipe)}
+
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-extrabold">
+                ${useMl ? recipe.badgeMl : recipe.badgeEn}
+              </span>
+              ${dietBadge}
+            </div>
+
+            <h3 class="text-sm sm:text-base font-extrabold text-stone-900 leading-snug">${useMl ? recipe.titleMl : recipe.titleEn}</h3>
+
+            <div class="space-y-2">
+              <div class="rounded-2xl bg-amber-50/80 border border-amber-200 p-3">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 mb-0.5">☀️ ${t.breakfastLabel}</div>
+                <p class="text-xs text-stone-700 leading-relaxed">${useMl ? recipe.breakfastMl : recipe.breakfastEn}</p>
+              </div>
+              <div class="rounded-2xl bg-teal-50/80 border border-teal-200 p-3">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-teal-800 mb-0.5">🌤️ ${t.lunchLabel}</div>
+                <p class="text-xs text-stone-700 leading-relaxed">${useMl ? recipe.lunchMl : recipe.lunchEn}</p>
+              </div>
+              <div class="rounded-2xl bg-purple-50/80 border border-purple-200 p-3">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-purple-800 mb-0.5">🌙 ${t.dinnerLabel}</div>
+                <p class="text-xs text-stone-700 leading-relaxed">${useMl ? recipe.dinnerMl : recipe.dinnerEn}</p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onclick="switchTab('prepare')"
+              class="pressable w-full py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-extrabold shadow-xs"
+            >
+              ${t.viewRecipeBtn}
+            </button>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      function renderPrepareCards() {
+        const t = tObj();
+        const useMl = state.lang === 'ml';
+        const container = document.getElementById('prepareCardsContainer');
+        container.innerHTML = '';
+
+        if (state.selectedIngredients.length === 0) {
+          container.appendChild(buildFriendlyEmptyCard(true));
+          return;
+        }
+
+        const matched = getStrictlyMatchedDishes();
+        if (matched.length === 0) {
+          container.appendChild(buildFriendlyEmptyCard(false));
+          return;
+        }
+
+        matched.forEach((recipe) => {
+          const card = document.createElement('article');
+          card.className = 'culinary-card rounded-3xl p-4 space-y-3.5';
+          const measurements = useMl ? recipe.measurementsMl : recipe.measurementsEn;
+          const steps = useMl ? recipe.stepsMl : recipe.stepsEn;
+
+          card.innerHTML = `
+            ${getRecipeArtworkSvg(recipe)}
+
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-800 text-[11px] font-extrabold">
+                ${useMl ? recipe.badgeMl : recipe.badgeEn}
+              </span>
+              <span class="text-[11px] font-extrabold text-orange-700">⏱️ ${recipe.cookMins} mins</span>
+            </div>
+
+            <h3 class="text-sm sm:text-base font-extrabold text-stone-900">${useMl ? recipe.titleMl : recipe.titleEn}</h3>
+
+            <div class="rounded-2xl bg-amber-50/70 border border-amber-200 p-3 space-y-1.5">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-amber-800">⚖️ ${t.ingredientsHeading}</div>
+              <ul class="space-y-1 text-xs text-stone-700 list-disc list-inside">
+                ${measurements.map((m) => `<li>${m}</li>`).join('')}
+              </ul>
+            </div>
+
+            <div class="space-y-2">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-teal-800">👨‍🍳 ${t.stepsHeading}</div>
+              ${steps.map((s, idx) => `
+                <div class="flex items-start gap-2.5 rounded-xl bg-teal-50/50 border border-teal-200 p-2.5">
+                  <span class="w-5 h-5 rounded-full bg-teal-700 text-white text-[11px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">${idx + 1}</span>
+                  <p class="text-xs text-stone-700 leading-relaxed">${s}</p>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          container.appendChild(card);
+        });
+      }
+
+      // HEALTH CONDITIONS & DIET ADVISOR
+      function renderHealthConditions() {
+        const t = tObj();
+        const useMl = state.lang === 'ml';
+        const chipsWrap = document.getElementById('healthConditionChips');
+        const resultsWrap = document.getElementById('healthGuidanceResults');
+        const totalSelected = state.selectedConditions.length + state.customConditions.length;
+
+        document.getElementById('healthCondCountBadge').textContent = totalSelected === 0
+          ? (useMl ? 'തിരഞ്ഞെടുത്തിട്ടില്ല' : 'None selected')
+          : `${totalSelected} ${t.selectedSuffix}`;
+
+        chipsWrap.innerHTML = '';
+        HEALTH_CONDITIONS_DB.forEach((cond) => {
+          const isSel = state.selectedConditions.includes(cond.id);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = isSel
+            ? 'pressable inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-extrabold shadow-xs'
+            : 'pressable inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-50 hover:bg-rose-50 border border-stone-200 text-stone-700 text-xs font-semibold';
+          btn.innerHTML = `<span>${cond.icon}</span><span>${useMl ? cond.ml : cond.en}</span><span>${isSel ? '✓' : '+'}</span>`;
+          btn.addEventListener('click', () => {
+            if (state.selectedConditions.includes(cond.id)) {
+              state.selectedConditions = state.selectedConditions.filter((x) => x !== cond.id);
+            } else {
+              state.selectedConditions.push(cond.id);
+            }
+            persist();
+            renderHealthConditions();
+            updateKitchenHealthAdvisory();
+          });
+          chipsWrap.appendChild(btn);
+        });
+
+        state.customConditions.forEach((cName, idx) => {
+          const pill = document.createElement('span');
+          pill.className = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-600 text-white text-xs font-extrabold';
+          pill.innerHTML = `<span>🩺 ${cName}</span><button type="button" class="opacity-80 hover:opacity-100">✕</button>`;
+          pill.querySelector('button').addEventListener('click', () => {
+            state.customConditions.splice(idx, 1);
+            persist();
+            renderHealthConditions();
+          });
+          chipsWrap.appendChild(pill);
+        });
+
+        resultsWrap.innerHTML = '';
+        state.selectedConditions.forEach((cid) => {
+          const cond = HEALTH_CONDITIONS_DB.find((c) => c.id === cid);
+          if (!cond) return;
+          const card = document.createElement('div');
+          card.className = 'rounded-2xl bg-stone-50 border border-stone-200 p-3 space-y-2';
+          card.innerHTML = `
+            <div class="text-xs font-extrabold text-stone-900">${cond.icon} ${useMl ? cond.ml : cond.en}</div>
+            <div class="rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-xs">
+              <strong class="text-rose-700 block mb-0.5">${t.avoidLabel}</strong>
+              <span class="text-stone-700">${useMl ? cond.avoidMl : cond.avoidEn}</span>
+            </div>
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5 text-xs">
+              <strong class="text-emerald-800 block mb-0.5">${t.includeLabel}</strong>
+              <span class="text-stone-700">${useMl ? cond.includeMl : cond.includeEn}</span>
+            </div>
+          `;
+          resultsWrap.appendChild(card);
+        });
+
+        state.customConditions.forEach((cName) => {
+          const lower = cName.toLowerCase();
+          const matchedMed = VALID_MEDICAL_CONDITIONS.find((m) =>
+            m.keys.some((k) => lower.includes(k))
+          );
+
+          const card = document.createElement('div');
+          card.className = 'rounded-2xl bg-stone-50 border border-stone-200 p-3 space-y-2 text-xs';
+          if (matchedMed) {
+            card.innerHTML = `
+              <div class="font-extrabold text-stone-900">🩺 ${cName}</div>
+              <div class="rounded-xl bg-rose-50 border border-rose-200 p-2.5 text-xs">
+                <strong class="text-rose-700 block mb-0.5">${t.avoidLabel}</strong>
+                <span class="text-stone-700">${useMl ? matchedMed.avoidMl : matchedMed.avoidEn}</span>
+              </div>
+              <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-2.5 text-xs">
+                <strong class="text-emerald-800 block mb-0.5">${t.includeLabel}</strong>
+                <span class="text-stone-700">${useMl ? matchedMed.includeMl : matchedMed.includeEn}</span>
+              </div>
+            `;
+          } else {
+            card.innerHTML = `
+              <div class="font-extrabold text-stone-900">🩺 ${cName}</div>
+              <p class="text-stone-700">
+                ${useMl
+                  ? 'പൊതുവായ നിർദ്ദേശം: വറുത്ത ഭക്ഷണങ്ങളും അമിതമായ ഉപ്പും മധുരവും ഒഴിവാക്കി പച്ചക്കറികളും പരിപ്പും കൂടുതലായി ഉൾപ്പെടുത്തുക.'
+                  : 'General guidance: Limit fried, sugary, and high-sodium foods; prioritize fresh vegetables, lentils, and steady hydration.'}
+              </p>
+            `;
+          }
+          resultsWrap.appendChild(card);
+        });
+      }
+
+      function calculateDietMetrics() {
+        const t = tObj();
+        const w = Math.max(30, Math.min(200, parseFloat(document.getElementById('weightInput').value) || 70));
+        const h = Math.max(120, Math.min(220, parseFloat(document.getElementById('heightInput').value) || 170));
+        const goal = document.getElementById('goalSelect').value;
+
+        state.weight = w;
+        state.height = h;
+        state.goal = goal;
+        persist();
+
+        const hm = h / 100;
+        const bmi = w / (hm * hm);
+        let cal = Math.round(w * 30);
+        if (goal === 'loss') cal -= 350;
+        if (goal === 'muscle') cal += 300;
+        const pro = Math.round(w * (goal === 'muscle' ? 1.4 : goal === 'loss' ? 1.2 : 1.0));
+
+        document.getElementById('bmiResult').textContent = bmi.toFixed(1);
+        const st = document.getElementById('bmiStatus');
+        if (bmi < 18.5) {
+          st.textContent = t.bmiUnder;
+          st.className = 'text-[10px] font-extrabold text-sky-700 uppercase';
+        } else if (bmi <= 24.9) {
+          st.textContent = t.bmiNormal;
+          st.className = 'text-[10px] font-extrabold text-emerald-700 uppercase';
+        } else {
+          st.textContent = t.bmiOver;
+          st.className = 'text-[10px] font-extrabold text-amber-700 uppercase';
+        }
+
+        document.getElementById('calResult').textContent = cal.toLocaleString();
+        document.getElementById('proResult').textContent = `${pro}g`;
+      }
+
+      function renderWaterGlasses() {
+        const grid = document.getElementById('waterGlassesGrid');
+        const liters = ((state.waterGlasses / 8) * 2.5).toFixed(1);
+        document.getElementById('waterCounterBadge').textContent = `${state.waterGlasses} / 8 (${liters}L)`;
+        grid.innerHTML = '';
+        for (let i = 1; i <= 8; i++) {
+          const filled = i <= state.waterGlasses;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = filled
+            ? 'pressable h-11 rounded-xl bg-sky-100 border border-sky-400 text-base flex items-center justify-center shadow-2xs'
+            : 'pressable h-11 rounded-xl bg-stone-100 border border-stone-200 text-base opacity-45 flex items-center justify-center';
+          btn.textContent = '💧';
+          btn.addEventListener('click', () => {
+            state.waterGlasses = state.waterGlasses === i ? i - 1 : i;
+            persist();
+            renderWaterGlasses();
+          });
+          grid.appendChild(btn);
+        }
+      }
+
+      // GROCERY LIST & DIRECT PHONE WHATSAPP INTEGRATION
+      function buildWhatsappShareMessage() {
+        const pending = state.groceries.filter((g) => !g.done).map((g) => '• ' + g.text).join('\n');
+        const header = state.lang === 'ml' ? '🛒 *MealPrep പലചരക്ക് ലിസ്റ്റ്:*\n' : '🛒 *MealPrep Grocery List:*\n';
+        const emptyMsg = state.lang === 'ml' ? 'എല്ലാ സാധനങ്ങളും സ്റ്റോക്കുണ്ട്!' : 'All items stocked!';
+        return header + (pending || emptyMsg);
+      }
+
+      function updateWhatsappDeepLink() {
+        const waBtn = document.getElementById('shareWhatsappBtn');
+        if (!waBtn) return;
+        const encoded = encodeURIComponent(buildWhatsappShareMessage());
+        waBtn.href = `whatsapp://send?text=${encoded}`;
+      }
+
+      function renderGroceryList() {
+        const t = tObj();
+        const container = document.getElementById('groceryListContainer');
+        const rem = state.groceries.filter((g) => !g.done).length;
+        document.getElementById('groceryCountBadge').textContent = `${rem} ${t.itemsSuffix}`;
+        updateWhatsappDeepLink();
+
+        container.innerHTML = '';
+        if (state.groceries.length === 0) {
+          container.innerHTML = `<p class="text-xs text-stone-500 text-center py-6">${t.emptyGrocery}</p>`;
+          return;
+        }
+
+        state.groceries.forEach((item, idx) => {
+          const row = document.createElement('div');
+          row.className = `flex items-center justify-between gap-3 rounded-2xl px-3.5 py-3 border ${
+            item.done ? 'bg-stone-50 border-stone-200 opacity-60' : 'bg-white border-purple-200 shadow-2xs'
+          }`;
+          row.innerHTML = `
+            <button type="button" class="flex items-center gap-3 flex-1 text-left">
+              <span class="w-5 h-5 rounded-md flex items-center justify-center text-xs font-extrabold border ${
+                item.done ? 'bg-purple-700 border-purple-700 text-white' : 'border-stone-300 text-transparent'
+              }">✓</span>
+              <span class="text-xs sm:text-sm font-semibold ${item.done ? 'line-through text-stone-400' : 'text-stone-800'}">${item.text}</span>
+            </button>
+            <button type="button" class="text-stone-400 hover:text-rose-600 px-2 py-1 text-sm font-bold">✕</button>
+          `;
+          const btns = row.querySelectorAll('button');
+          btns[0].addEventListener('click', () => {
+            state.groceries[idx].done = !state.groceries[idx].done;
+            persist();
+            renderGroceryList();
+          });
+          btns[1].addEventListener('click', () => {
+            state.groceries.splice(idx, 1);
+            persist();
+            renderGroceryList();
+          });
+          container.appendChild(row);
+        });
+      }
+
+      function applyLanguage() {
+        const t = tObj();
+        document.documentElement.lang = state.lang;
+        document.getElementById('langSelect').value = state.lang;
+        document.getElementById('headerSubtitle').textContent = t.headerSub;
+
+        document.getElementById('navLabel-fridge').textContent = t.navFridge;
+        document.getElementById('navLabel-combo').textContent = t.navCombo;
+        document.getElementById('navLabel-prepare').textContent = t.navPrepare;
+        document.getElementById('navLabel-diet').textContent = t.navDiet;
+        document.getElementById('navLabel-grocery').textContent = t.navGrocery;
+
+        document.getElementById('fridgeTitle').textContent = t.fridgeTitle;
+        document.getElementById('fridgeSub').textContent = t.fridgeSub;
+        document.getElementById('clearAllItemsBtn').textContent = t.clearBtn;
+        document.getElementById('catGrainsLabel').textContent = t.catGrains;
+        document.getElementById('catProteinLabel').textContent = t.catProtein;
+        document.getElementById('catVegLabel').textContent = t.catVeg;
+        document.getElementById('generatePlanBtnText').textContent = t.genPlanBtn;
+
+        document.getElementById('comboTitle').textContent = t.comboTitle;
+        document.getElementById('comboSub').textContent = t.comboSub;
+        document.getElementById('editFridgeBtn').textContent = t.editFridgeBtn;
+
+        document.getElementById('prepareTitle').textContent = t.prepareTitle;
+        document.getElementById('prepareSub').textContent = t.prepareSub;
+
+        document.getElementById('healthCondHeading').textContent = t.healthCondHeading;
+        document.getElementById('healthCondSub').textContent = t.healthCondSub;
+        document.getElementById('dietTitle').textContent = t.dietTitle;
+        document.getElementById('dietSub').textContent = t.dietSub;
+        document.getElementById('plateHeading').textContent = t.plateHeading;
+        document.getElementById('zoneVeggiesTitle').textContent = t.zoneVeggiesTitle;
+        document.getElementById('zoneVeggiesDesc').textContent = t.zoneVeggiesDesc;
+        document.getElementById('zoneCarbsTitle').textContent = t.zoneCarbsTitle;
+        document.getElementById('zoneCarbsDesc').textContent = t.zoneCarbsDesc;
+        document.getElementById('zoneProteinTitle').textContent = t.zoneProteinTitle;
+        document.getElementById('zoneProteinDesc').textContent = t.zoneProteinDesc;
+        document.getElementById('calcHeading').textContent = t.calcHeading;
+        document.getElementById('weightLabel').textContent = t.weightLabel;
+        document.getElementById('heightLabel').textContent = t.heightLabel;
+        document.getElementById('goalLabel').textContent = t.goalLabel;
+
+        const gSel = document.getElementById('goalSelect');
+        gSel.options[0].textContent = t.goalMaintain;
+        gSel.options[1].textContent = t.goalLoss;
+        gSel.options[2].textContent = t.goalMuscle;
+
+        document.getElementById('calUnit').textContent = t.calUnit;
+        document.getElementById('proUnit').textContent = t.proUnit;
+        document.getElementById('waterHeading').textContent = t.waterHeading;
+        document.getElementById('waterHint').textContent = t.waterHint;
+
+        document.getElementById('groceryTitle').textContent = t.groceryTitle;
+        document.getElementById('grocerySub').textContent = t.grocerySub;
+        document.getElementById('groceryInput').placeholder = t.groceryPlaceholder;
+        document.getElementById('groceryAddBtn').textContent = t.groceryAdd;
+        document.getElementById('shareWhatsappText').textContent = t.shareWhatsapp;
+
+        renderDietTogglesUI();
+        renderFridgeChips();
+        renderRegionBars();
+        renderCombos();
+        renderPrepareCards();
+        renderHealthConditions();
+        calculateDietMetrics();
+        renderWaterGlasses();
+        renderGroceryList();
+      }
+
+      // EVENT WIRING
+      document.getElementById('langSelect').addEventListener('change', (e) => {
+        state.lang = e.target.value;
+        persist();
+        applyLanguage();
+      });
+
+      document.getElementById('closeSnackbarBtn').addEventListener('click', () => {
+        document.getElementById('snackbar').classList.add('hidden');
+      });
+
+      document.getElementById('toggleVegBtn').addEventListener('click', () => toggleDietaryFilter('veg'));
+      document.getElementById('toggleNonVegBtn').addEventListener('click', () => toggleDietaryFilter('nonveg'));
+      document.getElementById('toggleDairyBtn').addEventListener('click', () => toggleDietaryFilter('dairy'));
+
+      document.getElementById('openFtueBtn').addEventListener('click', () => openFtue(0));
+      document.getElementById('ftueSkipTurnOffBtn').addEventListener('click', () => closeFtue(true));
+      document.getElementById('ftueBackBtn').addEventListener('click', () => {
+        if (ftueStep > 0) { ftueStep--; renderFtueStep(); }
+      });
+      document.getElementById('ftueNextBtn').addEventListener('click', () => {
+        if (ftueStep < 4) { ftueStep++; renderFtueStep(); }
+        else { closeFtue(false); }
+      });
+
+      document.querySelectorAll('[data-toggle-cat-add]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const cat = btn.getAttribute('data-toggle-cat-add');
+          const form = document.querySelector(`[data-cat-add-form="${cat}"]`);
+          if (!form) return;
+          form.classList.toggle('hidden');
+          if (!form.classList.contains('hidden')) form.querySelector('input').focus();
+        });
+      });
+
+      // DESI NAME CONVERTER + APPLY ACROSS ALL AREAS
+      document.querySelectorAll('[data-cat-add-form]').forEach((form) => {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const cat = form.getAttribute('data-cat-add-form');
+          const inp = form.querySelector('input');
+          const rawVal = inp.value.trim();
+          if (!rawVal) return;
+
+          const resolved = resolveDesiProduct(rawVal, cat);
+
+          if (resolved.dietType === 'nonveg') state.dietToggles.nonveg = true;
+          if (resolved.isDairy) state.dietToggles.dairy = true;
+
+          if (resolved.converted) {
+            const targetPool = BUILTIN_INGREDIENTS[resolved.category] || [];
+            const foundItem = targetPool.find((x) => x.id === resolved.targetId);
+            if (foundItem && resolved.desiLabel.toLowerCase() !== resolved.canonicalName.toLowerCase()) {
+              foundItem.desiAlias = resolved.desiLabel;
+            }
+            if (!state.selectedIngredients.includes(resolved.targetId)) {
+              state.selectedIngredients.push(resolved.targetId);
+            }
+            showSnackbar(
+              state.lang === 'ml'
+                ? `✨ "${resolved.desiLabel}" → "${resolved.canonicalName}" ആയി മാറ്റി എല്ലാ വിഭാഗങ്ങളിലും ചേർത്തു!`
+                : `✨ Converted "${resolved.desiLabel}" → "${resolved.canonicalName}" and applied across Kitchen, Meals & Prepare!`,
+              'teal'
+            );
+          } else {
+            const existingCustom = state.customItems.find(
+              (x) => x.name.toLowerCase() === resolved.canonicalName.toLowerCase()
+            );
+            if (existingCustom) {
+              if (!state.selectedIngredients.includes(existingCustom.id)) {
+                state.selectedIngredients.push(existingCustom.id);
+              }
+            } else {
+              state.customItems.push({
+                id: resolved.targetId,
+                name: resolved.canonicalName,
+                category: resolved.category,
+                icon: resolved.icon,
+                dietType: resolved.dietType,
+                isDairy: resolved.isDairy
+              });
+              state.selectedIngredients.push(resolved.targetId);
+            }
+            showSnackbar(
+              state.lang === 'ml'
+                ? `"${resolved.canonicalName}" ചേർത്ത് എല്ലാ വിഭാഗങ്ങളിലും അപ്‌ഡേറ്റ് ചെയ്തു!`
+                : `Added "${resolved.canonicalName}" and applied across Kitchen, Meals & Grocery!`,
+              'teal'
+            );
+          }
+
+          inp.value = '';
+          form.classList.add('hidden');
+          persist();
+          renderDietTogglesUI();
+          renderFridgeChips();
+          renderCombos();
+          renderPrepareCards();
+        });
+      });
+
+      document.getElementById('clearAllItemsBtn').addEventListener('click', () => {
+        state.selectedIngredients = [];
+        persist();
+        renderFridgeChips();
+      });
+
+      document.getElementById('kitchenGoDietBtn').addEventListener('click', () => switchTab('diet'));
+      document.getElementById('editFridgeBtn').addEventListener('click', () => switchTab('fridge'));
+      document.getElementById('generatePlanBtn').addEventListener('click', () => switchTab('combo'));
+
+      document.querySelectorAll('.nav-tab').forEach((btn) => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+      });
+
+      document.getElementById('customConditionForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('customConditionInput');
+        const errBox = document.getElementById('customConditionError');
+        const errTxt = document.getElementById('customConditionErrorText');
+        const val = inp.value.trim();
+
+        const check = validateHealthConditionInput(val);
+        if (!check.valid) {
+          errTxt.textContent = check.error;
+          errBox.classList.remove('hidden');
+          inp.classList.add('border-rose-500', 'bg-rose-50/40');
+          showSnackbar(check.error, 'rose');
+          return;
+        }
+
+        errBox.classList.add('hidden');
+        inp.classList.remove('border-rose-500', 'bg-rose-50/40');
+        state.customConditions.push(check.normalizedName);
+        inp.value = '';
+        persist();
+        renderHealthConditions();
+        showSnackbar(
+          state.lang === 'ml'
+            ? `🩺 "${check.normalizedName}" ചേർത്തു!`
+            : `🩺 Added "${check.normalizedName}" to your health profile!`,
+          'teal'
+        );
+      });
+
+      document.getElementById('dismissConditionErrorBtn').addEventListener('click', () => {
+        document.getElementById('customConditionError').classList.add('hidden');
+        document.getElementById('customConditionInput').classList.remove('border-rose-500', 'bg-rose-50/40');
+      });
+
+      document.getElementById('customConditionInput').addEventListener('input', () => {
+        document.getElementById('customConditionError').classList.add('hidden');
+        document.getElementById('customConditionInput').classList.remove('border-rose-500', 'bg-rose-50/40');
+      });
+
+      document.getElementById('weightInput').addEventListener('input', calculateDietMetrics);
+      document.getElementById('heightInput').addEventListener('input', calculateDietMetrics);
+      document.getElementById('goalSelect').addEventListener('change', calculateDietMetrics);
+
+      document.getElementById('groceryForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const inp = document.getElementById('groceryInput');
+        const val = inp.value.trim();
+        if (!val) return;
+        const resolved = resolveDesiProduct(val, 'veg');
+        const displayGrocery = resolved.converted && resolved.desiLabel.toLowerCase() !== resolved.canonicalName.toLowerCase()
+          ? `${resolved.canonicalName} (${resolved.desiLabel})`
+          : val;
+        state.groceries.unshift({ text: displayGrocery, done: false });
+        inp.value = '';
+        persist();
+        renderGroceryList();
+      });
+
+      document.getElementById('shareWhatsappBtn').addEventListener('click', (e) => {
+        const message = buildWhatsappShareMessage();
+        const encoded = encodeURIComponent(message);
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        if (isMobile) {
+          window.location.href = `whatsapp://send?text=${encoded}`;
+          setTimeout(() => {
+            if (!document.hidden) {
+              window.location.href = `https://api.whatsapp.com/send?text=${encoded}`;
+            }
+          }, 900);
+          e.preventDefault();
+        } else {
+          e.preventDefault();
+          window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank', 'noopener,noreferrer');
+        }
+      });
+
+      document.getElementById('shareNativeBtn').addEventListener('click', async () => {
+        const message = buildWhatsappShareMessage();
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'MealPrep Grocery List',
+              text: message
+            });
+          } catch (err) {}
+        } else if (navigator.clipboard) {
+          await navigator.clipboard.writeText(message);
+          showSnackbar(
+            state.lang === 'ml'
+              ? '📋 ലിസ്റ്റ് കോപ്പി ചെയ്തു! ഇനി WhatsApp-ൽ പേസ്റ്റ് ചെയ്യാം.'
+              : '📋 Grocery list copied! Paste it into WhatsApp or any app.',
+            'teal'
+          );
+        }
+      });
+
+      // INIT + SPLASH SCREEN DISMISSAL (TAP OR AUTO)
+      let splashDismissed = false;
+      function dismissSplashScreen() {
+        if (splashDismissed) return;
+        splashDismissed = true;
+        const splash = document.getElementById('appSplashScreen');
+        if (splash) {
+          splash.classList.add('splash-fade-out');
+          setTimeout(() => splash.remove(), 450);
+        }
+        if (!state.ftueDisabled) {
+          openFtue(0);
+        }
+      }
+
+      const splashEl = document.getElementById('appSplashScreen');
+      if (splashEl) {
+        splashEl.addEventListener('click', dismissSplashScreen);
+        splashEl.addEventListener('touchstart', dismissSplashScreen, { passive: true });
+        splashEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') dismissSplashScreen();
+        });
+      }
+
+      document.getElementById('weightInput').value = state.weight;
+      document.getElementById('heightInput').value = state.height;
+      document.getElementById('goalSelect').value = state.goal;
+      applyLanguage();
+      switchTab(state.activeTab);
+
+      setTimeout(dismissSplashScreen, 1150);
+    })();
+  </script>
+</body>
+</html>
